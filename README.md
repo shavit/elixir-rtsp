@@ -4,6 +4,30 @@
 
 > RTSP library
 
+# Quick start
+
+Create a client
+```
+iex> {:ok, pid} = ExRtmp.Client.start_link host: "127.0.0.1", port: 554
+```
+```
+CSeq: 0
+Cache-Control: no-store
+...
+```
+
+Send a request
+```
+iex> req = ExRtsp.Request.new method: :options
+iex> msg = ExRtsp.Request.encode req
+iex> GenServer.call pid, {:send_req, msg}
+```
+```
+CSeq: 1
+Cache-Control: no-store
+...
+```
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed

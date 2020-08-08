@@ -68,7 +68,7 @@ defmodule ExRtsp.Request do
   end
 
   defp encode_header(%__MODULE__{header: header, header_lines: lines}) do
-    lines = Enum.join(lines, "\r\n")
+    lines = lines |> Enum.filter(&(!is_nil(&1))) |> Enum.join("\r\n")
     header <> "\r\n" <> lines <> @crlf
   end
 
