@@ -29,7 +29,7 @@ defmodule ExRtsp.RequestTest do
       ]
 
       req = Request.new(opts)
-      assert "OPTIONS * RTSP/1.0\r\nCSeq: 4\r\n\r\n\r\n" == Request.encode(req)
+      assert "OPTIONS * RTSP/1.0\r\nCSeq: 4\r\n\r\n" == Request.encode(req)
     end
 
     test "option_set_transport/1 returns a transport option in binary format" do
