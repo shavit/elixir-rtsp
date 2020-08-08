@@ -1,6 +1,8 @@
 # ExRtsp
 
-**TODO: Add description**
+[![Build Status](https://travis-ci.org/shavit/elixir-rtsp.svg?branch=master)](https://travis-ci.org/shavit/elixir-rtsp)
+
+> RTSP library
 
 ## Installation
 
