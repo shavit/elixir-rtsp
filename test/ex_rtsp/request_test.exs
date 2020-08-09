@@ -17,7 +17,7 @@ defmodule ExRtsp.RequestTest do
       assert %ExRtsp.Request{
                body: [],
                header: "OPTIONS * RTSP/1.0",
-               header_lines: ["CSeq: 4", nil]
+               header_lines: ["CSeq: 4", nil, nil]
              } == req
     end
 
@@ -38,7 +38,7 @@ defmodule ExRtsp.RequestTest do
     end
 
     test "optino_set_transport_default/0 returns a default transport option" do
-      assert "Transport: RTP/AVP;unicast;client_port=4588-4589" ==
+      assert "Transport: RTP/AVP;unicast;client_port=3000-3001" ==
                Request.option_set_transport_default()
     end
   end
