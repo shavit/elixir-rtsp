@@ -2,7 +2,7 @@ defmodule ExRtsp.Request do
   @moduledoc """
   Documentation for `ExRtsp.Request`.
   """
-
+  
   defstruct [
     :header,
     :header_lines,
@@ -55,7 +55,8 @@ defmodule ExRtsp.Request do
       header: method <> " " <> resource <> " " <> @version,
       header_lines: [
         opts |> Keyword.get(:cseq, 1) |> header_cseq(),
-        Keyword.get(opts, :transport)
+        Keyword.get(opts, :transport),
+	Keyword.get(opts, :session)
       ]
     }
   end
@@ -98,7 +99,7 @@ defmodule ExRtsp.Request do
   def option_set_transport(opt), do: "Transport: #{opt}"
 
   def option_set_transport_default,
-    do: option_set_transport("RTP/AVP;unicast;client_port=4588-4589")
+    do: option_set_transport("RTP/AVP;unicast;client_port=3000-3001")
 
   defp encode_body(%__MODULE__{body: body}) do
     Enum.join(body, "\r\n")

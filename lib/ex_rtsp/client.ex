@@ -3,6 +3,7 @@ defmodule ExRtsp.Client do
   Documentation for `ExRtsp.Client`.
   """
   use GenServer
+  alias ExRtsp.Response
   alias ExRtsp.Request
   require Logger
 
@@ -19,7 +20,8 @@ defmodule ExRtsp.Client do
       conn: nil,
       cseq: 0,
       host: opts |> Keyword.get(:host, "127.0.0.1") |> String.to_charlist(),
-      port: Keyword.get(opts, :port, 1935)
+      port: Keyword.get(opts, :port, 1935),
+      protocol: Keyword.get(opts, :protocol, :tcp)
     }
 
     {:ok, state, {:continue, :dial_rtsp}}
@@ -30,13 +32,17 @@ defmodule ExRtsp.Client do
 
     req =
       [
-        url: "rtmp://192.168.2.7:554",
+        url: "rtmp://192.168.2.7:554/s0",
         cseq: state.cseq,
-        method: :options
+        method: :describe
       ]
       |> Request.new()
-
+    
     send_req(sock, req)
+
+    # req =
+    #   Request.new(url: "rtmp://192.168.2.7:554/s0/trackID=1", cseq: state.cseq + 1, method: :setup, transport: Request.option_set_transport_default())
+    # send_req(sock, req)
 
     {:noreply, %{state | conn: sock}}
   end
@@ -48,6 +54,7 @@ defmodule ExRtsp.Client do
 
   def send_req(sock, %Request{} = req) do
     req = Request.encode(req)
+    Logger.debug("Send request")
     :gen_tcp.send(sock, req)
   end
 
@@ -59,6 +66,8 @@ defmodule ExRtsp.Client do
 
   def handle_info({:tcp, _from, msg}, state) do
     Logger.info("TCP message: #{msg}")
+    res = Response.new(msg)
+    state = Map.put(state, :session_id, res.session)
 
     {:noreply, state}
   end
