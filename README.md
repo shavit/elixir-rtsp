@@ -19,7 +19,6 @@ Cache-Control: no-store
 Send a request
 ```
 iex> req = ExRtsp.Request.new method: :options
-iex> msg = ExRtsp.Request.encode req
 iex> GenServer.call pid, {:send_req, msg}
 ```
 ```
