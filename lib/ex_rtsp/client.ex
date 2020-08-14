@@ -3,8 +3,8 @@ defmodule ExRtsp.Client do
   Documentation for `ExRtsp.Client`.
   """
   use GenServer
-  alias ExRtsp.Response
   alias ExRtsp.Request
+  alias ExRtsp.Response
   require Logger
 
   def start_link(opts) do
@@ -21,7 +21,8 @@ defmodule ExRtsp.Client do
       cseq: 0,
       host: opts |> Keyword.get(:host, "127.0.0.1") |> String.to_charlist(),
       port: Keyword.get(opts, :port, 1935),
-      protocol: Keyword.get(opts, :protocol, :tcp)
+      protocol: Keyword.get(opts, :protocol, :tcp),
+      session_id: <<>>
     }
 
     {:ok, state, {:continue, :dial_rtsp}}
@@ -37,7 +38,7 @@ defmodule ExRtsp.Client do
         method: :describe
       ]
       |> Request.new()
-    
+
     send_req(sock, req)
 
     # req =
@@ -59,6 +60,13 @@ defmodule ExRtsp.Client do
   end
 
   def handle_call({:send_req, req}, _ref, state) do
+    state = %{state | cseq: state.cseq + 1}
+
+    req =
+      req
+      |> Map.put(:cseq, state.cseq)
+      |> Map.put(:session_id, state.session_id)
+
     res = send_req(state.conn, req)
 
     {:reply, res, state}
@@ -66,10 +74,15 @@ defmodule ExRtsp.Client do
 
   def handle_info({:tcp, _from, msg}, state) do
     Logger.info("TCP message: #{msg}")
-    res = Response.new(msg)
-    state = Map.put(state, :session_id, res.session)
 
-    {:noreply, state}
+    case Response.new(msg) do
+      %Response{session: session} ->
+        {:noreply, %{state | session_id: session}}
+
+      {:error, reason} ->
+        Logger.error("Error: #{reason}: #{inspect(msg)}")
+        {:noreply, state}
+    end
   end
 
   def handle_info({:tcp_closed, _port}, state) do

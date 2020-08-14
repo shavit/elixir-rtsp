@@ -11,14 +11,14 @@ defmodule ExRtsp.MixProject do
       name: "ExRtsp",
       description: "RTSP library",
       docs: [
-	main: "ExRtsp",
-	extras: ["README.md"]
+        main: "ExRtsp",
+        extras: ["README.md"]
       ],
       package: [
-	links: %{
-	  "Github" => "https://github.com/shavit/elixir-rtsp"
-	},
-	licenses: ["Apache 2.0"],
+        links: %{
+          "Github" => "https://github.com/shavit/elixir-rtsp"
+        },
+        licenses: ["Apache 2.0"]
       ],
       source_url: "https://github.com/shavit/elixir-rtsp"
     ]
@@ -35,7 +35,7 @@ defmodule ExRtsp.MixProject do
   defp deps do
     [
       {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.22", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.22", only: :dev, runtime: false}
     ]
   end
 end

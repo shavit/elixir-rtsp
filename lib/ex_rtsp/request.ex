@@ -2,7 +2,7 @@ defmodule ExRtsp.Request do
   @moduledoc """
   Documentation for `ExRtsp.Request`.
   """
-  
+
   defstruct [
     :header,
     :header_lines,
@@ -56,7 +56,7 @@ defmodule ExRtsp.Request do
       header_lines: [
         opts |> Keyword.get(:cseq, 1) |> header_cseq(),
         Keyword.get(opts, :transport),
-	Keyword.get(opts, :session)
+        Keyword.get(opts, :session)
       ]
     }
   end
@@ -86,7 +86,6 @@ defmodule ExRtsp.Request do
       setup: "SETUP",
       set_parameter: "SET_PARAMETER",
       teardown: "TEARDOWN",
-      # TODO: Complete this
       extension_token: ""
     }
     |> Map.get(method, {:error, "invalid method"})
@@ -103,5 +102,17 @@ defmodule ExRtsp.Request do
 
   defp encode_body(%__MODULE__{body: body}) do
     Enum.join(body, "\r\n")
+  end
+
+  @doc """
+  Create a SETUP request
+
+  The response will have the session ID, that will be used in
+    the PLAY request later on
+  Session: <SESSION>
+  """
+  def new_setup(_resp) do
+    url = "rtsp://host/s0/trackID=1"
+    new(method: :setup, url: url, transport: option_set_transport_default())
   end
 end
