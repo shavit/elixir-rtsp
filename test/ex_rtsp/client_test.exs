@@ -10,8 +10,9 @@ defmodule ExRtsp.ClientTest do
     end
 
     test "init/1 initialize the client state" do
-      assert {:ok, %{conn: nil, cseq: 0, host: '0.0.0.0', port: 4000}, {:continue, :dial_rtsp}} =
-               Client.init(host: "0.0.0.0", port: 4000)
+      assert {:ok, %{abs_path: "/stream-1", conn: nil, cseq: 0, host: "0.0.0.0", port: 4000},
+              {:continue, :dial_rtsp}} =
+               Client.init(abs_path: "/stream-1", host: "0.0.0.0", port: 4000)
     end
   end
 end

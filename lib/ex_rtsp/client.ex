@@ -17,9 +17,10 @@ defmodule ExRtsp.Client do
       do: Logger.warn("Missing client host, using localhost instead")
 
     state = %{
+      abs_path: Keyword.get(opts, :abs_path, "/s0"),
       conn: nil,
       cseq: 0,
-      host: opts |> Keyword.get(:host, "127.0.0.1") |> String.to_charlist(),
+      host: Keyword.get(opts, :host, "127.0.0.1"),
       port: Keyword.get(opts, :port, 1935),
       protocol: Keyword.get(opts, :protocol, :tcp),
       session_id: <<>>
@@ -29,11 +30,11 @@ defmodule ExRtsp.Client do
   end
 
   def handle_continue(:dial_rtsp, state) do
-    {:ok, sock} = reconnect(state.host, state.port)
+    {:ok, sock} = state.host |> String.to_charlist() |> reconnect(state.port)
 
     req =
       [
-        url: "rtmp://192.168.2.7:554/s0",
+        url: build_url(state),
         cseq: state.cseq,
         method: :describe
       ]
@@ -41,12 +42,10 @@ defmodule ExRtsp.Client do
 
     send_req(sock, req)
 
-    # req =
-    #   Request.new(url: "rtmp://192.168.2.7:554/s0/trackID=1", cseq: state.cseq + 1, method: :setup, transport: Request.option_set_transport_default())
-    # send_req(sock, req)
-
     {:noreply, %{state | conn: sock}}
   end
+
+  defp build_url(state), do: "rtmp://#{state.host}:#{state.port}#{state.abs_path}"
 
   def reconnect(host, port) do
     opts = [:binary, {:packet, 0}, {:active, true}]
@@ -57,6 +56,21 @@ defmodule ExRtsp.Client do
     req = Request.encode(req)
     Logger.debug("Send request")
     :gen_tcp.send(sock, req)
+  end
+
+  def handle_call({:setup, opts}, _ref, state) do
+    transport = Keyword.get(opts, :transport, Request.option_set_transport_default())
+    url = build_url(state) <> "/trackID=1"
+
+    req =
+      Request.new(
+        url: url,
+        cseq: state.cseq + 1,
+        method: :setup,
+        transport: transport
+      )
+
+    send_req(state.conn, req)
   end
 
   def handle_call({:send_req, req}, _ref, state) do
