@@ -83,7 +83,23 @@ defmodule ExRtsp.Client do
         url: url,
         cseq: state.cseq + 1,
         method: :play,
-	session: state.session_id,
+        session: state.session_id
+      )
+
+    res = send_req(state.conn, req)
+
+    {:reply, res, state}
+  end
+
+  def handle_call({:pause, opts}, _ref, state) do
+    url = build_url(state) <> "/trackID=1"
+
+    req =
+      Request.new(
+        url: url,
+        cseq: state.cseq + 1,
+        method: :pause,
+        session: state.session_id
       )
 
     res = send_req(state.conn, req)

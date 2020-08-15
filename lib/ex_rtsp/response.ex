@@ -6,6 +6,7 @@ defmodule ExRtsp.Response do
   defstruct [
     :header,
     :body,
+    :rtp_info,
     :session
   ]
 
@@ -39,6 +40,7 @@ defmodule ExRtsp.Response do
       %__MODULE__{
         header: header,
         body: body,
+        rtp_info: get_rtp_value(header),
         session: get_session_value(header)
       }
     end
@@ -57,6 +59,27 @@ defmodule ExRtsp.Response do
   end
 
   defp has_vaild_body(_), do: false
+
+  defp get_rtp_value(header) do
+    case header |> Enum.filter(&filter_rtp_info_key/1) |> List.first() do
+      nil -> nil
+      parts -> get_rtp_value_url(parts)
+    end
+  end
+
+  defp get_rtp_value_url([_key | url_parts]) when is_list(url_parts) do
+    url_parts
+    |> Enum.join(":")
+    |> String.split("url=")
+    |> List.last()
+    |> String.trim()
+  end
+
+  defp get_rtp_value_url(_url_parts), do: nil
+
+  defp filter_rtp_info_key(header_list) do
+    "rtp-info" == header_list |> List.first() |> String.downcase()
+  end
 
   defp get_session_value(header) do
     case header |> List.pop_at(0) |> elem(1) |> Enum.filter(&filter_session_key/1) do
