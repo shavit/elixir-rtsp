@@ -21,7 +21,7 @@ defmodule ExRtsp.Client do
       conn: nil,
       cseq: 0,
       host: Keyword.get(opts, :host, "127.0.0.1"),
-      port: Keyword.get(opts, :port, 1935),
+      port: Keyword.get(opts, :port, 554),
       protocol: Keyword.get(opts, :protocol, :tcp),
       session_id: <<>>
     }
@@ -70,7 +70,9 @@ defmodule ExRtsp.Client do
         transport: transport
       )
 
-    send_req(state.conn, req)
+    res = send_req(state.conn, req)
+
+    {:reply, res, state}
   end
 
   def handle_call({:send_req, req}, _ref, state) do

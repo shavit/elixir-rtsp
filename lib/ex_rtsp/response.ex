@@ -33,7 +33,7 @@ defmodule ExRtsp.Response do
     header = header |> String.split("\r\n") |> Enum.map(&String.split(&1, ":"))
     body = body |> String.split("\r\n") |> Enum.map(&String.split(&1, "="))
 
-    if Enum.count(header) <= 1 or Enum.count(body) <= 1 do
+    if Enum.count(header) <= 1 or !has_valid_body(body) do
       {:error, "invalid response"}
     else
       %__MODULE__{
@@ -43,6 +43,20 @@ defmodule ExRtsp.Response do
       }
     end
   end
+
+  defp has_vaild_body([""]), do: false
+
+  defp has_valid_body(body) when is_list(body) do
+    Enum.reduce(body, true, fn a, acc ->
+      if acc == true do
+        a == [""] or Enum.count(a) >= 2
+      else
+        acc
+      end
+    end)
+  end
+
+  defp has_vaild_body(_), do: false
 
   defp get_session_value(header) do
     case header |> List.pop_at(0) |> elem(1) |> Enum.filter(&filter_session_key/1) do
