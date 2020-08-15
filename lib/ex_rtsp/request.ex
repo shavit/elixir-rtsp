@@ -56,7 +56,7 @@ defmodule ExRtsp.Request do
       header_lines: [
         opts |> Keyword.get(:cseq, 1) |> header_cseq(),
         Keyword.get(opts, :transport),
-        Keyword.get(opts, :session)
+        opts |> Keyword.get(:session) |> header_session()
       ]
     }
   end
@@ -94,6 +94,9 @@ defmodule ExRtsp.Request do
   defp header_accept(body), do: "Accept: #{body}"
 
   defp header_cseq(n), do: "CSeq: #{n}"
+
+  defp header_session(nil), do: nil
+  defp header_session(n), do: "Session: #{n}"
 
   def option_set_transport(opt), do: "Transport: #{opt}"
 
