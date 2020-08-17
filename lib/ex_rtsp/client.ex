@@ -123,6 +123,22 @@ defmodule ExRtsp.Client do
     {:reply, res, state}
   end
 
+  def handle_call({:teardown, opts}, _ref, state) do
+    url = build_url(state) <> "/trackID=1"
+
+    req =
+      Request.new(
+        url: url,
+        cseq: state.cseq + 1,
+        method: :record,
+        session: state.session_id
+      )
+
+    res = send_req(state.conn, req)
+
+    {:reply, res, state}
+  end
+
   def handle_call({:send_req, req}, _ref, state) do
     state = %{state | cseq: state.cseq + 1}
 
