@@ -41,5 +41,9 @@ defmodule ExRtsp.RequestTest do
       assert "Transport: RTP/AVP;unicast;client_port=3000-3001" ==
                Request.option_set_transport_default()
     end
+
+    test "new_setup/1 creates a setup request" do
+      assert %Request{} = Request.new_setup([])
+    end
   end
 end

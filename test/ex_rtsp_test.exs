@@ -3,6 +3,5 @@ defmodule ExRtspTest do
   doctest ExRtsp
 
   test "rtsp" do
-
   end
 end

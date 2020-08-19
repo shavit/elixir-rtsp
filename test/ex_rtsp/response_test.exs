@@ -20,8 +20,10 @@ defmodule ExRtsp.ResponseTest do
   end
 
   test "decode/1 decodes setup response" do
-    resp = "RTSP/1.0 200 OK\r\nCSeq: 7\r\nCache-Control: no-store\r\nDate: Sun, 01 Jan 1970 00:00:00 UTC\r\nExpires: Sun, 01 Jan 1970 00:00:00 UTC\r\nPragma: no-cache\r\nServer: ExRtsp Server\r\nSession: 12345678\r\nTransport: RTP/AVP/UDP;unicast;source=127.0.0.1;client_port=3000-3001;server_port=45998-45999;ssrc=7jl51ep7q\r\n\r\n"
-    assert %Response{} = resp =  Response.new(resp)
+    resp =
+      "RTSP/1.0 200 OK\r\nCSeq: 7\r\nCache-Control: no-store\r\nDate: Sun, 01 Jan 1970 00:00:00 UTC\r\nExpires: Sun, 01 Jan 1970 00:00:00 UTC\r\nPragma: no-cache\r\nServer: ExRtsp Server\r\nSession: 12345678\r\nTransport: RTP/AVP/UDP;unicast;source=127.0.0.1;client_port=3000-3001;server_port=45998-45999;ssrc=7jl51ep7q\r\n\r\n"
+
+    assert %Response{} = resp = Response.new(resp)
     assert "12345678" == resp.session
   end
 end
