@@ -56,6 +56,7 @@ defmodule ExRtsp.Request do
       header_lines: [
         opts |> Keyword.get(:cseq, 1) |> header_cseq(),
         Keyword.get(opts, :transport),
+        opts |> Keyword.get(:user_agent) |> header_user_agent(),
         opts |> Keyword.get(:session) |> header_session(),
         opts |> Keyword.get(:range) |> header_range()
       ]
@@ -95,6 +96,9 @@ defmodule ExRtsp.Request do
   defp header_accept(body), do: "Accept: #{body}"
 
   defp header_cseq(n), do: "CSeq: #{n}"
+
+  defp header_user_agent(nil), do: header_user_agent("ExRTMP")
+  defp header_user_agent(name), do: "User-Agent: #{name}"
 
   defp header_session(nil), do: nil
   defp header_session(n), do: "Session: #{n}"
