@@ -3,6 +3,7 @@ defmodule ExRtsp.Client do
   Documentation for `ExRtsp.Client`.
   """
   use GenServer
+  alias ExRtsp.Client.RTP
   alias ExRtsp.Request
   alias ExRtsp.Response
   require Logger
@@ -16,6 +17,8 @@ defmodule ExRtsp.Client do
     if is_nil(Keyword.get(opts, :host)),
       do: Logger.warn("Missing client host, using localhost instead")
 
+    {:ok, rtp_pid} = RTP.start_link([])
+
     state = %{
       abs_path: Keyword.get(opts, :abs_path, "/s0"),
       conn: nil,
@@ -23,6 +26,7 @@ defmodule ExRtsp.Client do
       host: Keyword.get(opts, :host, "127.0.0.1"),
       port: Keyword.get(opts, :port, 554),
       protocol: Keyword.get(opts, :protocol, :tcp),
+      rtp_pid: rtp_pid,
       session_id: <<>>
     }
 

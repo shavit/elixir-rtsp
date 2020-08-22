@@ -11,7 +11,7 @@ defmodule ExRtsp.Client.RTP do
   end
 
   def init(opts) do
-    port = Keyword.get(opts, :port, 554)
+    port = Keyword.get(opts, :port, 3000)
     {:ok, socket} = :gen_tcp.listen(port, [:binary, {:active, true}])
 
     state = %{
