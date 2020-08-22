@@ -90,7 +90,8 @@ defmodule ExRtsp.Client do
         url: url,
         cseq: state.cseq + 1,
         method: :play,
-        session: state.session_id
+        session: state.session_id,
+        range: Keyword.get(opts, :range, {10})
       )
 
     res = send_req(state.conn, req)
