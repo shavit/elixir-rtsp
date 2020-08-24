@@ -24,6 +24,7 @@ defmodule ExRtsp.Client do
     state = %{
       abs_path: Keyword.get(opts, :abs_path, "/s0"),
       conn: nil,
+      content_base: "/",
       cseq: 0,
       host: Keyword.get(opts, :host, "127.0.0.1"),
       port: Keyword.get(opts, :port, 554),
@@ -67,7 +68,7 @@ defmodule ExRtsp.Client do
 
   def handle_call({:setup, opts}, _ref, state) do
     transport = Keyword.get(opts, :transport, Request.option_set_transport_default())
-    url = build_url(state) <> "/trackID=1"
+    url = state.content_base <> "trackID=1"
 
     req =
       Request.new(
@@ -84,12 +85,13 @@ defmodule ExRtsp.Client do
   end
 
   def handle_call({:play, opts}, _ref, state) do
-    url = build_url(state) <> "/trackID=1"
+    url = state.content_base <> "trackID=1"
 
     req =
       Request.new(
         url: url,
         cseq: state.cseq + 1,
+        content_base: state.content_base,
         method: :play,
         session: state.session_id,
         range: Keyword.get(opts, :range, {10})
@@ -107,6 +109,7 @@ defmodule ExRtsp.Client do
       Request.new(
         url: url,
         cseq: state.cseq + 1,
+        content_base: state.content_base,
         method: :pause,
         session: state.session_id
       )
@@ -123,6 +126,7 @@ defmodule ExRtsp.Client do
       Request.new(
         url: url,
         cseq: state.cseq + 1,
+        content_base: state.content_base,
         method: :record,
         session: state.session_id
       )
@@ -165,8 +169,11 @@ defmodule ExRtsp.Client do
     Logger.info("TCP message: #{msg}")
 
     case Response.new(msg) do
-      %Response{session: session} ->
+      %Response{session: session, content_base: nil} ->
         {:noreply, %{state | session_id: session}}
+
+      %Response{session: session, content_base: content_base} ->
+        {:noreply, %{state | session_id: session, content_base: content_base}}
 
       {:error, reason} ->
         Logger.error("Error: #{reason}: #{inspect(msg)}")
