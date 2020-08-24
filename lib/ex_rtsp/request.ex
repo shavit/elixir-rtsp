@@ -58,7 +58,8 @@ defmodule ExRtsp.Request do
         Keyword.get(opts, :transport),
         opts |> Keyword.get(:user_agent) |> header_user_agent(),
         opts |> Keyword.get(:session) |> header_session(),
-        opts |> Keyword.get(:range) |> header_range()
+        opts |> Keyword.get(:range) |> header_range(),
+	opts |> Keyword.get(:accept) |> header_accept()
       ]
     }
   end
