@@ -59,7 +59,7 @@ defmodule ExRtsp.Request do
         opts |> Keyword.get(:user_agent) |> header_user_agent(),
         opts |> Keyword.get(:session) |> header_session(),
         opts |> Keyword.get(:range) |> header_range(),
-	opts |> Keyword.get(:accept) |> header_accept()
+        opts |> Keyword.get(:accept) |> header_accept()
       ]
     }
   end
@@ -94,6 +94,7 @@ defmodule ExRtsp.Request do
     |> Map.get(method, {:error, "invalid method"})
   end
 
+  defp header_accept(nil), do: nil
   defp header_accept(body), do: "Accept: #{body}"
 
   defp header_cseq(n), do: "CSeq: #{n}"

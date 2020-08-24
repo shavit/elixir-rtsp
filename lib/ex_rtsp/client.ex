@@ -75,7 +75,7 @@ defmodule ExRtsp.Client do
         cseq: state.cseq + 1,
         method: :setup,
         transport: transport,
-	accept: Keyword.get(opts, :accept, "application/sdp")
+        accept: Keyword.get(opts, :accept, "application/sdp")
       )
 
     res = send_req(state.conn, req)
