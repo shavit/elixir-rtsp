@@ -99,7 +99,7 @@ defmodule ExRtsp.Request do
 
   defp header_cseq(n), do: "CSeq: #{n}"
 
-  defp header_user_agent(nil), do: header_user_agent("ExRTMP")
+  defp header_user_agent(nil), do: header_user_agent("ExRtsp")
   defp header_user_agent(name), do: "User-Agent: #{name}"
 
   defp header_session(nil), do: nil
@@ -112,7 +112,7 @@ defmodule ExRtsp.Request do
   def option_set_transport(opt), do: "Transport: #{opt}"
 
   def option_set_transport_default,
-    do: option_set_transport("RTP/AVP;unicast;client_port=3000-3001")
+    do: option_set_transport("RTP/AVP/UDP;unicast;client_port=3000-3001")
 
   defp encode_body(%__MODULE__{body: body}) do
     Enum.join(body, "\r\n")
