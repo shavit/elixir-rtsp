@@ -8,7 +8,9 @@ defmodule ExRtsp.Response do
     :body,
     :content_base,
     :rtp_info,
-    :session
+    :session,
+    :server_rtp_port,
+    :server_rtsp_port
   ]
 
   @doc """
@@ -43,7 +45,9 @@ defmodule ExRtsp.Response do
         body: body,
         content_base: get_content_base_value(header),
         rtp_info: get_rtp_value(header),
-        session: get_session_value(header)
+        session: get_session_value(header),
+        server_rtp_port: header |> get_server_ports() |> Enum.at(0),
+	server_rtsp_port: header |> get_server_ports() |> Enum.at(1)
       }
     end
   end
@@ -105,11 +109,46 @@ defmodule ExRtsp.Response do
   defp get_session_value(header) do
     case header |> List.pop_at(0) |> elem(1) |> Enum.filter(&filter_session_key/1) do
       [[_, session]] -> String.trim(session)
-      res -> nil
+      _ -> nil
     end
   end
 
   defp filter_session_key(header_list) do
     "session" == header_list |> List.first() |> String.downcase()
   end
+
+  defp get_server_ports(header) do
+    case get_server_header_pair(header, "transport") do
+      [[_ | [transport]]] ->
+	transport |> String.trim() |> String.split(";")
+	|> Enum.filter(fn x ->
+	  "server_port" == x |> String.split("=") |> List.first() |> String.downcase()
+	end)
+	|> Enum.map(fn x ->
+	  x |> String.split("=") |> List.last()
+	end)
+	|> get_server_ports_from_pair
+
+      _ -> []
+    end
+  end
+
+  defp get_server_ports_from_pair([ports]) do
+    ports |> String.split("-") |> Enum.map(&String.to_integer/1)
+  end
+  defp get_server_ports_from_pair(nil), do: []
+
+  defp get_server_header_pair(header_list, key) do
+    header_list
+    |> List.pop_at(0)
+    |> elem(1)
+    |> filter_server_header_pair(key)
+  end
+
+  defp filter_server_header_pair(header_list, key) do
+    Enum.filter(header_list, fn x ->
+      String.downcase(key) == x |> List.pop_at(0) |> elem(0) |> String.downcase()
+    end)
+  end
+
 end
