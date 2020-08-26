@@ -12,7 +12,7 @@ defmodule ExRtsp.Client.RTCP do
 
   def init(opts) do
     port = Keyword.get(opts, :port, 3001)
-    {:ok, socket} = :gen_tcp.listen(port, [:binary, {:active, true}])
+    {:ok, socket} = :gen_udp.open(port, [:binary, {:active, true}])
 
     state = %{
       port: port,
@@ -22,8 +22,15 @@ defmodule ExRtsp.Client.RTCP do
     {:ok, state}
   end
 
-  def handle_info({:tcp, _from, msg}, state) do
-    Logger.info("[Client.RTCP] New message: #{inspect(msg)}")
+  def handle_call(:stop, _ref, state) do
+    Logger.info("[Client.RTCP] stop")
+
+    {:reply, state, state}
+  end
+  
+  def handle_info({:udp, _port, _ip, _udp_port, msg}, state) do
+#    Logger.info("[Client.RTCP] New message: #{inspect(msg)}")
+
     {:noreply, state}
   end
 end
