@@ -53,7 +53,7 @@ defmodule ExRtsp.Client do
     {:noreply, %{state | conn: sock}}
   end
 
-  defp build_url(state), do: "rtmp://#{state.host}:#{state.port}#{state.abs_path}"
+  defp build_url(state), do: "rtsp://#{state.host}:#{state.port}#{state.abs_path}"
 
   def reconnect(host, port) do
     opts = [:binary, {:packet, 0}, {:active, true}]
