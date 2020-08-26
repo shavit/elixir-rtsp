@@ -27,9 +27,9 @@ defmodule ExRtsp.Client.RTCP do
 
     {:reply, state, state}
   end
-  
+
   def handle_info({:udp, _port, _ip, _udp_port, msg}, state) do
-#    Logger.info("[Client.RTCP] New message: #{inspect(msg)}")
+    #    Logger.info("[Client.RTCP] New message: #{inspect(msg)}")
 
     {:noreply, state}
   end

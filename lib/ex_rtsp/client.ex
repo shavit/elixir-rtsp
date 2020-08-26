@@ -166,10 +166,8 @@ defmodule ExRtsp.Client do
   end
 
   def handle_call(%{protocol: :tcp, rtcp_pid: rtcp, rtp_pid: rtp}, _ref, state) do
-    Logger.info "stop"
-
-    IO.inspect GenServer.call(rtcp, :stop)
-    IO.inspect GenServer.call(rtp, :stop)
+    GenServer.call(rtcp, :stop)
+    GenServer.call(rtp, :stop)
 
     {:reply, state, state}
   end
