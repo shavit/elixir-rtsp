@@ -16,7 +16,11 @@ defmodule ExRtsp.Encoder.Ffmpeg do
     {"", _exit_code} = System.cmd("mkfifo", [filename])
 
     port =
-      Port.open({:spawn, "ffmpeg -loglevel panic -hide_banner -i #{filename} -f hls /tmp/ffmpeg_job_#{job_id}/index.m3u8"}, [])
+      Port.open(
+        {:spawn,
+         "ffmpeg -loglevel panic -hide_banner -i #{filename} -f hls /tmp/ffmpeg_job_#{job_id}/index.m3u8"},
+        []
+      )
 
     {:ok, port}
   end
