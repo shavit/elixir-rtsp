@@ -11,9 +11,9 @@ defmodule ExRtsp.Encoder.Ffmpeg do
   """
   def setup(opts) do
     job_id = Keyword.get(opts, :job_id, 0)
-    :ok = File.mkdir("/tmp/ffmpeg_job_#{job_id}")
+    File.mkdir("/tmp/ffmpeg_job_#{job_id}")
     filename = "/tmp/ffmpeg_socket_#{job_id}"
-    {"", 0} = System.cmd("mkfifo", [filename])
+    {"", _exit_code} = System.cmd("mkfifo", [filename])
 
     port =
       Port.open({:spawn, "ffmpeg -i #{filename} -f hls /tmp/ffmpeg_job_#{job_id}/index.m3u8"}, [])

@@ -37,8 +37,6 @@ defmodule ExRtsp.Client.RTP do
     {:noreply, state}
   end
 
-  z
-
   def terminate(reason, state) do
     Logger.info("[Client.RTP] Terminated")
     Ffmpeg.teardown(state.encoder_socket)
