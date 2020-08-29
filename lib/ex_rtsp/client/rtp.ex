@@ -4,6 +4,7 @@ defmodule ExRtsp.Client.RTP do
   """
   use GenServer
   require Logger
+  alias ExRtsp.Encoder.Ffmpeg
 
   def start_link(opts) do
     name = Keyword.get(opts, :name, __MODULE__)
@@ -11,12 +12,14 @@ defmodule ExRtsp.Client.RTP do
   end
 
   def init(opts) do
+    {:ok, encoder_socket} = Ffmpeg.setup(opts)
     port = Keyword.get(opts, :port, 3000)
     {:ok, socket} = :gen_udp.open(port, [:binary, {:active, true}])
 
     state = %{
       port: port,
-      socket: socket
+      socket: socket,
+      encoder_socket: encoder_socket
     }
 
     {:ok, state}
@@ -29,8 +32,17 @@ defmodule ExRtsp.Client.RTP do
   end
 
   def handle_info({:udp, _port, _ip, _udp_port, msg}, state) do
-    #    Logger.info("[Client.RTP] New message: #{inspect(msg)}")
+    Ffmpeg.encode(state.encoder_socket, msg)
 
     {:noreply, state}
+  end
+
+  z
+
+  def terminate(reason, state) do
+    Logger.info("[Client.RTP] Terminated")
+    Ffmpeg.teardown(state.encoder_socket)
+
+    reason
   end
 end
