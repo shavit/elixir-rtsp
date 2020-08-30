@@ -59,7 +59,8 @@ defmodule ExRtsp.Request do
         opts |> Keyword.get(:user_agent) |> header_user_agent(),
         opts |> Keyword.get(:session) |> header_session(),
         opts |> Keyword.get(:range) |> header_range(),
-        opts |> Keyword.get(:accept) |> header_accept()
+        opts |> Keyword.get(:accept) |> header_accept(),
+        opts |> Keyword.get(:parameter) |> header_parameter()
       ]
     }
   end
@@ -108,6 +109,9 @@ defmodule ExRtsp.Request do
   defp header_range(nil), do: nil
   defp header_range({a, b}), do: "Range: npt=#{a}-#{b}"
   defp header_range({a}), do: "Range: npt=#{a}-"
+
+  defp header_parameter(nil), do: nil
+  defp header_parameter([{k, v}]), do: "#{k}: #{v}"
 
   def option_set_transport(opt), do: "Transport: #{opt}"
 
