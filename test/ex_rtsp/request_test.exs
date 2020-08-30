@@ -17,7 +17,7 @@ defmodule ExRtsp.RequestTest do
       assert %ExRtsp.Request{
                body: [],
                header: "OPTIONS * RTSP/1.0",
-               header_lines: ["CSeq: 4", nil, "User-Agent: ExRtsp", nil, nil, nil]
+               header_lines: ["CSeq: 4", nil, "User-Agent: ExRtsp", nil, nil, nil, nil]
              } == req
     end
 

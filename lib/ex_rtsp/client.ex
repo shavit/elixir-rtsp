@@ -102,7 +102,7 @@ defmodule ExRtsp.Client do
     {:reply, res, state}
   end
 
-  def handle_call({:pause, opts}, _ref, state) do
+  def handle_call({:pause, _opts}, _ref, state) do
     url = build_url(state) <> "/trackID=1"
 
     req =
@@ -119,7 +119,7 @@ defmodule ExRtsp.Client do
     {:reply, res, state}
   end
 
-  def handle_call({:record, opts}, _ref, state) do
+  def handle_call({:record, _opts}, _ref, state) do
     url = build_url(state) <> "/trackID=1"
 
     req =
@@ -136,7 +136,7 @@ defmodule ExRtsp.Client do
     {:reply, res, state}
   end
 
-  def handle_call({:teardown, opts}, _ref, state) do
+  def handle_call({:teardown, _opts}, _ref, state) do
     url = build_url(state) <> "/trackID=1"
 
     req =
