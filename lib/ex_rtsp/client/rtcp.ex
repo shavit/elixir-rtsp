@@ -29,8 +29,22 @@ defmodule ExRtsp.Client.RTCP do
   end
 
   def handle_info({:udp, _port, _ip, _udp_port, msg}, state) do
-    #    Logger.info("[Client.RTCP] New message: #{inspect(msg)}")
+    Logger.info("[Client.RTCP] New message: #{inspect(msg)}")
+    Logger.info("[Client.RTCP] #{inspect(decode(msg))}")
 
     {:noreply, state}
   end
+
+  defp decode(<<v::2, p::1, rc::5, pt::8, l::16, ssrc::32, _body::binary>>) do
+    %{
+      version: v,
+      padding: p == 1,
+      reception_report_count: rc,
+      packet_type: pt,
+      length: l,
+      ssrc: ssrc
+    }
+  end
+
+  defp encode(_), do: nil
 end
