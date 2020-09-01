@@ -47,7 +47,16 @@ defmodule ExRtsp.Client.RTCP do
     }
   end
 
-  defp decode_report_blocks(rp), do: nil
+  defp decode_report_blocks(<<>>), do: nil
+
+  defp decode_report_blocks(<<bt::8, types::8, l::16, tsbc::binary>> = rp) do
+    %{
+      block_type: bt,
+      type_specific: types,
+      block_length: l,
+      type_specific_block_contents: tsbc
+    }
+  end
 
   defp encode(_), do: nil
 end
