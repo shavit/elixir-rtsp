@@ -35,16 +35,19 @@ defmodule ExRtsp.Client.RTCP do
     {:noreply, state}
   end
 
-  defp decode(<<v::2, p::1, rc::5, pt::8, l::16, ssrc::32, _body::binary>>) do
+  defp decode(<<v::2, p::1, rc::5, pt::8, l::16, ssrc::32, rp::binary>>) do
     %{
       version: v,
       padding: p == 1,
       reception_report_count: rc,
       packet_type: pt,
       length: l,
-      ssrc: ssrc
+      ssrc: ssrc,
+      report_blocks: decode_report_blocks(rp)
     }
   end
+
+  defp decode_report_blocks(rp), do: nil
 
   defp encode(_), do: nil
 end
