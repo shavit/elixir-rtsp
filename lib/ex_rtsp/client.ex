@@ -9,6 +9,21 @@ defmodule ExRtsp.Client do
   alias ExRtsp.Response
   require Logger
 
+  @api_calls [
+    :setup,
+    :play,
+    :pause,
+    :record,
+    :announce,
+    :teardown,
+    :set_parameter
+  ]
+  for api_call <- @api_calls do
+    def unquote(api_call)(pid, opts) do
+      GenServer.call(pid, {unquote(api_call), opts})
+    end
+  end
+
   def start_link(opts) do
     name = Keyword.get(opts, :name, :exrtsp_client)
     GenServer.start_link(__MODULE__, opts, name: name)
