@@ -55,12 +55,12 @@ defmodule ExRtsp.Client do
 
   defp build_url(state), do: "rtsp://#{state.host}:#{state.port}#{state.abs_path}"
 
-  def reconnect(host, port) do
+  defp reconnect(host, port) do
     opts = [:binary, {:packet, 0}, {:active, true}]
     :gen_tcp.connect(host, port, opts)
   end
 
-  def send_req(sock, %Request{} = req) do
+  defp send_req(sock, %Request{} = req) do
     req = Request.encode(req)
     Logger.debug("Send request")
     :gen_tcp.send(sock, req)
