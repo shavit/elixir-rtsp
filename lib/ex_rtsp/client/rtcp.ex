@@ -43,10 +43,11 @@ defmodule ExRtsp.Client.RTCP do
       packet_type: pt,
       length: l,
       ssrc: ssrc,
-      report_blocks: decode_report_blocks(rp)
+      report_blocks: decode_report_blocks(rp, [])
     }
   end
 
+  defp decode_report_blocks(<<>>, blocks), do: blocks
   defp decode_report_blocks(<<>>), do: nil
 
   defp decode_report_blocks(<<bt::8, types::8, l::16, tsbc::binary>> = rp) do
@@ -57,6 +58,23 @@ defmodule ExRtsp.Client.RTCP do
       type_specific_block_contents: tsbc
     }
   end
+
+  defp decode_report_blocks(
+         <<ssrc::32, bseq::16, eseq::16, ato::32, timestamp::32, rest::binary>>,
+         blocks
+       ) do
+    m = %{
+      ssrc: ssrc,
+      begin_seq: bseq,
+      end_seq: eseq,
+      arrival_time_offset: ato,
+      timestamp: timestamp
+    }
+
+    decode_report_blocks(rest, blocks ++ m)
+  end
+
+  defp decode_report_blocks(_msg, _blocks), do: {:error, "could not parse message"}
 
   defp encode(_), do: nil
 end
