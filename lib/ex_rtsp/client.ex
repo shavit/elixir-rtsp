@@ -19,7 +19,7 @@ defmodule ExRtsp.Client do
     :set_parameter
   ]
   for api_call <- @api_calls do
-    def unquote(api_call)(pid, opts) do
+    def unquote(api_call)(pid, opts \\ []) do
       GenServer.call(pid, {unquote(api_call), opts})
     end
   end
