@@ -1,6 +1,7 @@
 defmodule ExRtsp.ClientTest do
-  alias ExRtsp.Client
   use ExUnit.Case
+  doctest ExRtsp.Client
+  alias ExRtsp.Client
 
   describe "client" do
     test "start_link/1 creates a new client" do
