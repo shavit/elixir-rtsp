@@ -35,7 +35,7 @@ defmodule ExRtsp.Client.RTCP do
     {:noreply, state}
   end
 
-  defp decode(<<v::2, p::1, rc::5, pt::8, l::16, ssrc::32, rp::binary>>) do
+  def decode(<<v::2, p::1, rc::5, pt::8, l::16, ssrc::32, rp::binary>>) do
     %{
       version: v,
       padding: p == 1,
