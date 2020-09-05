@@ -32,7 +32,8 @@ defmodule ExRtsp.Client.RTP do
   end
 
   def handle_info({:udp, _port, _ip, _udp_port, msg}, state) do
-    Ffmpeg.encode(state.encoder_socket, msg)
+    msg_decoded = decode(msg)
+    Ffmpeg.encode(state.encoder_socket, msg_decoded)
 
     {:noreply, state}
   end
@@ -42,5 +43,20 @@ defmodule ExRtsp.Client.RTP do
     Ffmpeg.teardown(state.encoder_socket)
 
     reason
+  end
+
+  def decode(<<v::2, p::1, x::1, cc::4, m::1, pt::7, seq::16, tm::32, ssrc::32, b::binary>>) do
+    %{
+      version: v,
+      padding: p == 1,
+      extension: x == 1,
+      csrc_count: cc,
+      marker: m,
+      payload_type: pt,
+      sequence: seq,
+      timestamp: tm,
+      ssrc_identifier: ssrc,
+      payload: b
+    }
   end
 end
