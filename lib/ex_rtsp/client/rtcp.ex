@@ -47,6 +47,7 @@ defmodule ExRtsp.Client.RTCP do
     }
   end
 
+  defp decode_report_blocks(<<>>, []), do: []
   defp decode_report_blocks(<<>>, blocks), do: blocks
   defp decode_report_blocks(<<>>), do: nil
 
