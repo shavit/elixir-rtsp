@@ -33,7 +33,8 @@ defmodule ExRtsp.Client.RTP do
 
   def handle_info({:udp, _port, _ip, _udp_port, msg}, state) do
     msg_decoded = decode(msg)
-    Ffmpeg.encode(state.encoder_socket, msg_decoded)
+    body = msg.payload
+    Ffmpeg.encode(state.encoder_socket, body)
 
     {:noreply, state}
   end
