@@ -10,6 +10,7 @@ defmodule ExRtsp.Client do
   require Logger
 
   @api_calls [
+    :describe,
     :setup,
     :play,
     :pause,
@@ -82,6 +83,19 @@ defmodule ExRtsp.Client do
     req = Request.encode(req)
     Logger.debug("Send request")
     :gen_tcp.send(sock, req)
+  end
+
+  def handle_call({:describe, opts}, _ref, state) do
+    req =
+      Request.new(
+        url: build_url(state),
+        cseq: state.cseq + 1,
+        method: :describe
+      )
+
+    res = send_req(state.conn, req)
+
+    {:reply, res, state}
   end
 
   def handle_call({:setup, opts}, _ref, state) do
