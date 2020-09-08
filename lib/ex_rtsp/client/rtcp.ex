@@ -40,7 +40,7 @@ defmodule ExRtsp.Client.RTCP do
       version: v,
       padding: p == 1,
       reception_report_count: rc,
-      packet_type: pt,
+      packet_type: get_packet_type(pt),
       length: l,
       ssrc: ssrc,
       report_blocks: decode_report_blocks(rp, [])
@@ -82,4 +82,15 @@ defmodule ExRtsp.Client.RTCP do
   defp decode_report_blocks(_msg, _blocks), do: {:error, "could not parse message"}
 
   defp encode(_), do: nil
+
+  defp get_packet_type(pt) do
+    case pt do
+      200 -> :sr
+      201 -> :rp
+      202 -> :sdes
+      203 -> :bye
+      204 -> :app
+      _ -> pt
+    end
+  end
 end
