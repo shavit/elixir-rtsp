@@ -47,7 +47,6 @@ defmodule ExRtsp.Client.RTCP do
     }
   end
 
-  defp decode_report_blocks(<<>>, []), do: []
   defp decode_report_blocks(<<>>, blocks), do: blocks
   defp decode_report_blocks(<<0x0, 0x0, 0x0, 0x0>>, blocks), do: blocks
   defp decode_report_blocks(<<>>), do: nil
@@ -73,7 +72,11 @@ defmodule ExRtsp.Client.RTCP do
       timestamp: timestamp
     }
 
-    decode_report_blocks(rest, blocks ++ m)
+    decode_report_blocks(rest, blocks ++ [m])
+  end
+
+  defp decode_report_blocks(<<msg::32>>, blocks) do
+    decode_report_blocks(<<>>, blocks ++ [msg])
   end
 
   defp decode_report_blocks(_msg, _blocks), do: {:error, "could not parse message"}
