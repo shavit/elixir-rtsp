@@ -35,12 +35,72 @@ defmodule ExRtsp.Client.RTCP do
     {:noreply, state}
   end
 
-  def decode(<<v::2, p::1, rc::5, pt::8, l::16, ssrc::32, rp::binary>>) do
+  def decode(<<v::2, p::1, rc::5, 200::8, l::16, ssrc::32, rp::binary>>) do
     %{
       version: v,
       padding: p == 1,
       reception_report_count: rc,
-      packet_type: get_packet_type(pt),
+      packet_type: :sr,
+      length: l,
+      ssrc: ssrc,
+      report_blocks: decode_report_blocks(rp, [])
+    }
+  end
+
+  def decode(<<v::2, p::1, rc::5, 201::8, l::16, ssrc::32, rp::binary>>) do
+    %{
+      version: v,
+      padding: p == 1,
+      reception_report_count: rc,
+      packet_type: :rp,
+      length: l,
+      ssrc: ssrc,
+      report_blocks: decode_report_blocks(rp, [])
+    }
+  end
+
+  def decode(<<v::2, p::1, rc::5, 202::8, l::16, ssrc::32, rp::binary>>) do
+    %{
+      version: v,
+      padding: p == 1,
+      reception_report_count: rc,
+      packet_type: :sdes,
+      length: l,
+      ssrc: ssrc,
+      report_blocks: decode_report_blocks(rp, [])
+    }
+  end
+
+  def decode(<<v::2, p::1, rc::5, 203::8, l::16, ssrc::32, rp::binary>>) do
+    %{
+      version: v,
+      padding: p == 1,
+      reception_report_count: rc,
+      packet_type: :bye,
+      length: l,
+      ssrc: ssrc,
+      report_blocks: decode_report_blocks(rp, [])
+    }
+  end
+
+  def decode(<<v::2, p::1, rc::5, 204::8, l::16, ssrc::32, rp::binary>>) do
+    %{
+      version: v,
+      padding: p == 1,
+      reception_report_count: rc,
+      packet_type: :app,
+      length: l,
+      ssrc: ssrc,
+      report_blocks: decode_report_blocks(rp, [])
+    }
+  end
+
+  def decode(<<v::2, p::1, rc::5, _pt::8, l::16, ssrc::32, rp::binary>>) do
+    %{
+      version: v,
+      padding: p == 1,
+      reception_report_count: rc,
+      packet_type: :undefined,
       length: l,
       ssrc: ssrc,
       report_blocks: decode_report_blocks(rp, [])
@@ -82,15 +142,4 @@ defmodule ExRtsp.Client.RTCP do
   defp decode_report_blocks(_msg, _blocks), do: {:error, "could not parse message"}
 
   defp encode(_), do: nil
-
-  defp get_packet_type(pt) do
-    case pt do
-      200 -> :sr
-      201 -> :rp
-      202 -> :sdes
-      203 -> :bye
-      204 -> :app
-      _ -> pt
-    end
-  end
 end
