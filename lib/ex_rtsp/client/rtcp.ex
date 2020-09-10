@@ -36,6 +36,8 @@ defmodule ExRtsp.Client.RTCP do
   end
 
   def decode(<<v::2, p::1, rc::5, 200::8, l::16, ssrc::32, rp::binary>>) do
+    <<ntp_tm::64, rtp_tm::32, spc::32, soc::32, rp::binary>> = rp
+
     %{
       version: v,
       padding: p == 1,
@@ -43,6 +45,12 @@ defmodule ExRtsp.Client.RTCP do
       packet_type: :sr,
       length: l,
       ssrc: ssrc,
+      sender_information: %{
+        ntp_timestamp: ntp_tm,
+        rtp_timestamp: rtp_tm,
+        sender_packet_count: spc,
+        sender_octet_count: soc
+      },
       report_blocks: decode_report_blocks(rp, [])
     }
   end
@@ -54,9 +62,10 @@ defmodule ExRtsp.Client.RTCP do
       reception_report_count: rc,
       packet_type: :rp,
       length: l,
-      ssrc: ssrc,
-#      report_blocks: decode_report_blocks(rp, [])
+      ssrc: ssrc
+      #      report_blocks: decode_report_blocks(rp, [])
     }
+
     report_blocks = if rc == 0, do: [], else: decode_report_blocks(rp, [])
     Map.put(m, :report_blocks, report_blocks)
   end
