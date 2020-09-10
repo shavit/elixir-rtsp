@@ -48,15 +48,17 @@ defmodule ExRtsp.Client.RTCP do
   end
 
   def decode(<<v::2, p::1, rc::5, 201::8, l::16, ssrc::32, rp::binary>>) do
-    %{
+    m = %{
       version: v,
       padding: p == 1,
       reception_report_count: rc,
       packet_type: :rp,
       length: l,
       ssrc: ssrc,
-      report_blocks: decode_report_blocks(rp, [])
+#      report_blocks: decode_report_blocks(rp, [])
     }
+    report_blocks = if rc == 0, do: [], else: decode_report_blocks(rp, [])
+    Map.put(m, :report_blocks, report_blocks)
   end
 
   def decode(<<v::2, p::1, rc::5, 202::8, l::16, ssrc::32, rp::binary>>) do
