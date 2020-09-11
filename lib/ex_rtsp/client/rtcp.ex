@@ -122,25 +122,40 @@ defmodule ExRtsp.Client.RTCP do
   defp decode_report_blocks(<<0x0, 0x0, 0x0, 0x0>>, blocks), do: blocks
   defp decode_report_blocks(<<>>), do: nil
 
-  defp decode_report_blocks(<<bt::8, types::8, l::16, tsbc::binary>> = rp) do
-    %{
-      block_type: bt,
-      type_specific: types,
-      block_length: l,
-      type_specific_block_contents: tsbc
-    }
-  end
+  # defp decode_report_blocks(<<bt::8, types::8, l::16, tsbc::binary>> = rp) do
+  #   %{
+  #     block_type: bt,
+  #     type_specific: types,
+  #     block_length: l,
+  #     type_specific_block_contents: tsbc
+  #   }
+  # end
+
+  # defp decode_report_blocks(
+  #   <<ssrc::32, bseq::16, eseq::16, ato::32, timestamp::32, rest::binary>>,
+  #   blocks
+  # ) do
+  #   m = %{
+  #     ssrc: ssrc,
+  #     begin_seq: bseq,
+  #     end_seq: eseq,
+  #     arrival_time_offset: ato,
+  #     timestamp: timestamp
+  #   }
+
+  #   decode_report_blocks(rest, blocks ++ [m])
+  # end
 
   defp decode_report_blocks(
-         <<ssrc::32, bseq::16, eseq::16, ato::32, timestamp::32, rest::binary>>,
+         <<ssrc::32, fl::8, cnopl::24, ehsn::32, ij::32, rest::binary>>,
          blocks
        ) do
     m = %{
-      ssrc: ssrc,
-      begin_seq: bseq,
-      end_seq: eseq,
-      arrival_time_offset: ato,
-      timestamp: timestamp
+      ssrc_identifier: ssrc,
+      fraction_lost: fl,
+      cumulative_packet_lost: cnopl,
+      extended_highest_seq_n: ehsn,
+      interarrival_jitter: ij
     }
 
     decode_report_blocks(rest, blocks ++ [m])
