@@ -12,21 +12,22 @@ defmodule ExRtsp.Client.RTP do
   end
 
   def init(opts) do
-    {:ok, encoder_socket} = Ffmpeg.setup(opts)
+    {:ok, encoder_socket, tmp_file} = Ffmpeg.setup(opts)
     port = Keyword.get(opts, :port, 3000)
     {:ok, socket} = :gen_udp.open(port, [:binary, {:active, true}])
 
     state = %{
       port: port,
       socket: socket,
-      encoder_socket: encoder_socket
+      encoder_socket: encoder_socket,
+      tmp_file: tmp_file
     }
 
     {:ok, state}
   end
 
   def handle_call(:stop, _ref, state) do
-    Logger.info("[Client.RTCP] stop")
+    Logger.info("[Client.RTP] stop")
 
     {:reply, state, state}
   end
@@ -34,7 +35,7 @@ defmodule ExRtsp.Client.RTP do
   def handle_info({:udp, _port, _ip, _udp_port, msg}, state) do
     msg_decoded = decode(msg)
     body = msg_decoded.payload
-    Ffmpeg.encode(state.encoder_socket, body)
+    Ffmpeg.encode(state.tmp_file, body)
 
     {:noreply, state}
   end

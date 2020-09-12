@@ -4,7 +4,8 @@ defmodule ExRtsp.Encoder.FfmpegTest do
 
   describe "ffmpeg" do
     test "setup/1 creates a command" do
-      assert {:ok, port} = Ffmpeg.setup(job_id: 11)
+      assert {:ok, port, filename} = Ffmpeg.setup(job_id: 11)
+      assert filename == "/tmp/ffmpeg_socket_11"
       :ok = File.rm!("/tmp/ffmpeg_socket_11")
     end
   end

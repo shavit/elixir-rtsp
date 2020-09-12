@@ -19,10 +19,12 @@ defmodule ExRtsp.Encoder.Ffmpeg do
       Port.open(
         {:spawn,
          "ffmpeg -loglevel panic -hide_banner -i #{filename} -f hls /tmp/ffmpeg_job_#{job_id}/index.m3u8"},
-        []
+        [:binary]
       )
 
-    {:ok, port}
+    # true = Port.command(port, stream)
+
+    {:ok, port, filename}
   end
 
   @doc """
@@ -34,7 +36,7 @@ defmodule ExRtsp.Encoder.Ffmpeg do
     true = Port.close(port)
   end
 
-  def encode(port, stream) do
-    true = Port.command(port, stream)
+  def encode(tmp_file, stream) do
+    :ok = File.write(tmp_file, stream)
   end
 end
