@@ -28,11 +28,11 @@ defmodule ExRtsp.Encoder.Ffmpeg do
   end
 
   @doc """
-  teardown/1 clean temporary files before closing
+  teardown/2 clean temporary files before closing
   """
-  def teardown(port) do
-    File.rm!("/tmp/ffmpeg_socket_0")
-    File.rmdir!("/tmp/ffmpeg_job_0")
+  def teardown(port, job_id) do
+    File.rm!("/tmp/ffmpeg_socket_#{job_id}")
+    File.rmdir!("/tmp/ffmpeg_job_#{job_id}")
     true = Port.close(port)
   end
 
