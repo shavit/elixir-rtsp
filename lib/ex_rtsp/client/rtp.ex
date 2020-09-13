@@ -20,7 +20,8 @@ defmodule ExRtsp.Client.RTP do
       port: port,
       socket: socket,
       encoder_socket: encoder_socket,
-      tmp_file: tmp_file
+      tmp_file: tmp_file,
+      job_id: Keyword.get(opts, :job_id)
     }
 
     {:ok, state}
@@ -42,7 +43,7 @@ defmodule ExRtsp.Client.RTP do
 
   def terminate(reason, state) do
     Logger.info("[Client.RTP] Terminated")
-    Ffmpeg.teardown(state.encoder_socket)
+    Ffmpeg.teardown(state.encoder_socket, state.job_id)
 
     reason
   end
