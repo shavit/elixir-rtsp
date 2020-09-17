@@ -5,6 +5,7 @@ defmodule ExRtsp.Client.RTP do
   use GenServer
   require Logger
   alias ExRtsp.Encoder.Ffmpeg
+  alias ExRtsp.Encoder.Video
 
   def start_link(opts) do
     name = Keyword.get(opts, :name, __MODULE__)

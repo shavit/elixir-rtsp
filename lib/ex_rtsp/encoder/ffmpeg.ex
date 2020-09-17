@@ -39,4 +39,8 @@ defmodule ExRtsp.Encoder.Ffmpeg do
   def encode(tmp_file, stream) do
     :ok = File.write(tmp_file, stream)
   end
+
+  def port_command(port, stream) do
+    Port.command(port, stream)
+  end
 end
