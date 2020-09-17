@@ -9,6 +9,6 @@ defmodule ExRtsp.Encoder.Video do
   decode/1
   """
   def decode(<<f::1, nri::2, type::5, data::binary>>) do
-    %{f: v, nri: nri, type: type, data: data}
+    %{f: 1, nri: nri, type: type, data: data}
   end
 end
