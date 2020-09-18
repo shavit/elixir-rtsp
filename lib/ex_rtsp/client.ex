@@ -3,8 +3,8 @@ defmodule ExRtsp.Client do
   Documentation for `ExRtsp.Client`.
   """
   use GenServer
-  alias ExRtsp.Client.RTCP
-  alias ExRtsp.Client.RTP
+  alias ExRtsp.RTCP
+  alias ExRtsp.RTP
   alias ExRtsp.Request
   alias ExRtsp.Response
   require Logger
