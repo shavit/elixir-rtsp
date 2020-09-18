@@ -1,6 +1,6 @@
-defmodule ExRtsp.Client.RTCP do
+defmodule ExRtsp.RTCP do
   @moduledoc """
-  Documentation for `ExRtsp.Client.RTCP`.
+  Documentation for `ExRtsp.RTCP`.
   """
   use GenServer
   require Logger

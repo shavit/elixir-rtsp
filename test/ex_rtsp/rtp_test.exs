@@ -1,7 +1,7 @@
-defmodule ExRtsp.Client.RTPTest do
+defmodule ExRtsp.RTPTest do
   use ExUnit.Case
-  doctest ExRtsp.Client.RTP
-  alias ExRtsp.Client.RTP
+  doctest ExRtsp.RTP
+  alias ExRtsp.RTP
 
   describe "rtp" do
     test "start_link/1 creates rtp client" do
