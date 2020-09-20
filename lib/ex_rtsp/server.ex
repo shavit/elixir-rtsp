@@ -12,14 +12,21 @@ defmodule ExRtsp.Server do
 
   def init(opts) do
     port = opts |> Keyword.get(:port, "8554") |> String.to_integer()
-    {:ok, socket} = :gen_tcp.listen(port, [:binary, {:active, true}])
+    {:ok, lsock} = :gen_tcp.listen(port, [:binary, {:active, true}])
 
     state = %{
       port: port,
-      socket: socket
+      lsock: lsock,
+      sock: nil
     }
 
-    {:ok, state}
+    {:ok, state, {:continue, :accept_connections}}
+  end
+
+  def handle_continue(:accept_connections, state) do
+    {:ok, sock} = :gen_tcp.accept(state.lsock)
+
+    {:noreply, %{state | sock: sock}}
   end
 
   def handle_info({:tcp, _from, msg}, state) do
