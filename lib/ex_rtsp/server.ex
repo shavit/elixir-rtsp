@@ -11,7 +11,7 @@ defmodule ExRtsp.Server do
   end
 
   def init(opts) do
-    port = opts |> Keyword.get(:port, "8554") |> String.to_integer()
+    port = opts |> Keyword.get(:port, 8554) |> to_string() |> String.to_integer()
     {:ok, lsock} = :gen_tcp.listen(port, [:binary, {:active, true}])
 
     state = %{

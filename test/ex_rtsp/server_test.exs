@@ -10,8 +10,10 @@ defmodule ExRtsp.ServerTest do
     end
 
     test "init/1 initialize the client state" do
-      assert {:ok, %{socket: socket, port: 5543}} = Server.init(port: 5543)
-      assert is_nil(socket) == false
+      assert {:ok, %{lsock: lsock, sock: nil, port: 5543}, {:continue, :accept_connections}} =
+               Server.init(port: 5543)
+
+      assert is_nil(lsock) == false
     end
   end
 end

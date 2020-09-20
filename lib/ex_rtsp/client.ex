@@ -46,7 +46,7 @@ defmodule ExRtsp.Client do
       content_base: "/",
       cseq: 0,
       host: Keyword.get(opts, :host, "127.0.0.1"),
-      port: opts |> Keyword.get(:port, "554") |> String.to_integer(),
+      port: opts |> Keyword.get(:port, 554) |> to_string() |> String.to_integer(),
       protocol: Keyword.get(opts, :protocol, :tcp),
       rtcp_pid: rtcp_pid,
       rtp_pid: rtp_pid,
