@@ -35,4 +35,9 @@ defmodule ExRtsp.Server do
     Logger.info(inspect(Response.new(msg)))
     {:noreply, state}
   end
+
+  def handle_info(msg, state) do
+    Logger.error "Unsupported message: #{inspect(msg)}"
+    {:noreply, state}
+  end
 end
