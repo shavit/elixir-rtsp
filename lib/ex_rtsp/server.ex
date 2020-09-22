@@ -36,8 +36,8 @@ defmodule ExRtsp.Server do
     {:noreply, state}
   end
 
-  def handle_info(msg, state) do
-    Logger.error "Unsupported message: #{inspect(msg)}"
+  def handle_info({:tcp_closed, _port}, state) do
+    Logger.info("Connection closed by client")
     {:noreply, state}
   end
 end
