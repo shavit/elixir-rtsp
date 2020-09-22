@@ -232,7 +232,11 @@ defmodule ExRtsp.Client do
     Logger.info("TCP message: #{msg}")
 
     case Response.new(msg) do
-      %Response{session: session, content_base: nil} ->
+      %Response{status: 404, content_base: base} ->
+        Logger.error("Error: Route not found /#{base}")
+        {:noreply, state}
+
+      %Response{session: session, content_base: nil} = resp ->
         {:noreply, %{state | session_id: session}}
 
       %Response{session: session, content_base: content_base} ->

@@ -4,6 +4,7 @@ defmodule ExRtsp.Response do
   """
 
   defstruct [
+    :status,
     :header,
     :body,
     :content_base,
@@ -43,6 +44,7 @@ defmodule ExRtsp.Response do
       %__MODULE__{
         header: header,
         body: body,
+        status: get_status_code(header),
         content_base: get_content_base_value(header),
         rtp_info: get_rtp_value(header),
         session: get_session_value(header),
@@ -65,6 +67,12 @@ defmodule ExRtsp.Response do
   end
 
   defp has_vaild_body(_), do: false
+
+  defp get_status_code([[h | _h2] | _t]) do
+    h |> String.split(" ") |> Enum.at(1) |> String.to_integer()
+  end
+
+  defp get_status_code(_header), do: nil
 
   defp get_content_base_value(header) do
     case header |> Enum.filter(&filter_content_base_key/1) |> List.first() do
