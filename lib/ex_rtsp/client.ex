@@ -236,7 +236,7 @@ defmodule ExRtsp.Client do
         Logger.error("Error: Route not found /#{base}")
         {:noreply, state}
 
-      %Response{session: session, content_base: nil} = resp ->
+      %Response{session: session, content_base: nil} ->
         {:noreply, %{state | session_id: session}}
 
       %Response{session: session, content_base: content_base} ->
