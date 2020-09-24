@@ -16,7 +16,8 @@ defmodule ExRtsp.RTCP do
 
     state = %{
       port: port,
-      socket: socket
+      socket: socket,
+      server: Keyword.get(opts, :server)
     }
 
     {:ok, state}
@@ -28,9 +29,10 @@ defmodule ExRtsp.RTCP do
     {:reply, state, state}
   end
 
-  def handle_info({:udp, _port, _ip, _udp_port, msg}, state) do
+  def handle_info({:udp, port, _ip, _udp_port, msg}, state) do
     Logger.info("[Client.RTCP] New message: #{inspect(msg)}")
     Logger.info("[Client.RTCP] #{inspect(decode(msg))}")
+    msg |> decode() |> handle_message(state)
 
     {:noreply, state}
   end
@@ -137,4 +139,11 @@ defmodule ExRtsp.RTCP do
   end
 
   defp decode_report_blocks(_msg, _blocks), do: {:error, "could not parse message"}
+
+  defp handle_message(%{packet_type: type}, %{server: pid}) do
+    Logger.info("handle message: #{type}")
+    GenServer.cast(pid, {:send_seq, <<>>})
+  end
+
+  defp handle_message(_msg), do: nil
 end

@@ -228,6 +228,13 @@ defmodule ExRtsp.Client do
     {:reply, nil, state}
   end
 
+  def handle_cast({:send_req, req}, state) do
+    state = %{state | cseq: state.cseq + 1}
+    Logger.info("Send request #{inspect(req)}")
+
+    {:noreply, state}
+  end
+
   def handle_info({:tcp, _from, msg}, state) do
     Logger.info("TCP message: #{msg}")
 
