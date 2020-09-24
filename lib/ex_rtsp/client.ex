@@ -37,8 +37,8 @@ defmodule ExRtsp.Client do
     if is_nil(Keyword.get(opts, :host)),
       do: Logger.warn("Missing client host, using localhost instead")
 
-    {:ok, rtp_pid} = RTP.start_link([])
-    {:ok, rtcp_pid} = RTCP.start_link([])
+    {:ok, rtp_pid} = RTP.start_link(server: self())
+    {:ok, rtcp_pid} = RTCP.start_link(server: self())
 
     state = %{
       abs_path: Keyword.get(opts, :abs_path, "/s0"),
