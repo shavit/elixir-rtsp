@@ -13,6 +13,7 @@ defmodule ExRtsp.Encoder.Ffmpeg do
     job_id = Keyword.get(opts, :job_id, 0)
     File.mkdir("/tmp/ffmpeg_job_#{job_id}")
     filename = "/tmp/ffmpeg_socket_#{job_id}"
+    File.rm(filename)
     {"", _exit_code} = System.cmd("mkfifo", [filename])
 
     port =
