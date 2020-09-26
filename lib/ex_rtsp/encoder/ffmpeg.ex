@@ -11,8 +11,8 @@ defmodule ExRtsp.Encoder.Ffmpeg do
   """
   def setup(opts) do
     job_id = Keyword.get(opts, :job_id, 0)
-    File.mkdir("/tmp/ffmpeg_job_#{job_id}")
-    filename = "/tmp/ffmpeg_socket_#{job_id}"
+    ["/tmp", "ffmpeg_job_#{job_id}"] |> Path.join() |> File.mkdir()
+    filename = Path.join(["/tmp", "ffmpeg_socket_#{job_id}"])
     File.rm(filename)
     {"", _exit_code} = System.cmd("mkfifo", [filename])
 
@@ -32,8 +32,8 @@ defmodule ExRtsp.Encoder.Ffmpeg do
   teardown/2 clean temporary files before closing
   """
   def teardown(port, job_id) do
-    File.rm!("/tmp/ffmpeg_socket_#{job_id}")
-    File.rmdir!("/tmp/ffmpeg_job_#{job_id}")
+    ["/tmp", "ffmpeg_socket_#{job_id}"] |> Path.join() |> File.rm!()
+    ["/tmp", "ffmpeg_job_#{job_id}"] |> Path.join() |> File.rmdir!()
     true = Port.close(port)
   end
 
