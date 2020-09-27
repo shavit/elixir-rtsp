@@ -18,7 +18,8 @@ defmodule ExRtsp.RTCP do
       port: port,
       socket: socket,
       server: Keyword.get(opts, :server),
-      timestamp: nil
+      timestamp: nil,
+      ssrc: nil
     }
 
     {:ok, state}
@@ -36,7 +37,7 @@ defmodule ExRtsp.RTCP do
     decoded = decode(msg)
     handle_message(decoded, state)
 
-    {:noreply, %{state | timestamp: decoded.timestamp}}
+    {:noreply, %{state | timestamp: decoded.timestamp, ssrc: decoded.ssrc}}
   end
 
   def decode(<<v::2, p::1, rc::5, 200::8, l::16, ssrc::32, rp::binary>>) do
