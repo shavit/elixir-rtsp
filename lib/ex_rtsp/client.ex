@@ -231,6 +231,7 @@ defmodule ExRtsp.Client do
   def handle_cast({:send_seq, req}, state) do
     state = %{state | cseq: state.cseq + 1}
     Logger.info("Send request #{inspect(req)}")
+
     {:noreply, state}
   end
 

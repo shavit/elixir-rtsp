@@ -17,7 +17,8 @@ defmodule ExRtsp.RTCP do
     state = %{
       port: port,
       socket: socket,
-      server: Keyword.get(opts, :server)
+      server: Keyword.get(opts, :server),
+      timestamp: nil
     }
 
     {:ok, state}
@@ -32,9 +33,10 @@ defmodule ExRtsp.RTCP do
   def handle_info({:udp, port, _ip, _udp_port, msg}, state) do
     Logger.info("[Client.RTCP] New message: #{inspect(msg)}")
     Logger.info("[Client.RTCP] #{inspect(decode(msg))}")
-    msg |> decode() |> handle_message(state)
+    decoded = decode(msg)
+    handle_message(decoded, state)
 
-    {:noreply, state}
+    {:noreply, %{state | timestamp: decoded.timestamp}}
   end
 
   def decode(<<v::2, p::1, rc::5, 200::8, l::16, ssrc::32, rp::binary>>) do
