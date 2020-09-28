@@ -35,9 +35,9 @@ defmodule ExRtsp.RTCP do
     Logger.info("[Client.RTCP] New message: #{inspect(msg)}")
     Logger.info("[Client.RTCP] #{inspect(decode(msg))}")
     decoded = decode(msg)
-    handle_message(decoded, state)
+    state = handle_message(decoded, state)
 
-    {:noreply, %{state | timestamp: decoded.timestamp, ssrc: decoded.ssrc}}
+    {:noreply, state}
   end
 
   def decode(<<v::2, p::1, rc::5, 200::8, l::16, ssrc::32, rp::binary>>) do
@@ -143,17 +143,17 @@ defmodule ExRtsp.RTCP do
 
   defp decode_report_blocks(_msg, _blocks), do: {:error, "could not parse message"}
 
-  defp handle_message(%{packet_type: :bye}, %{server: pid}) do
-    GenServer.cast(pid, {:send_seq, bye("stream ended")})
+  defp handle_message(%{packet_type: :bye}, state) do
+    GenServer.cast(state.server, {:send_seq, bye("stream ended")})
     Process.exit(self(), :normal)
+    state
   end
 
-  defp handle_message(%{packet_type: type}, %{server: pid}) do
-    Logger.info("handle message: #{type}")
-    GenServer.cast(pid, {:send_seq, <<>>})
+  defp handle_message(%{packet_type: :sr, sender_information: info, ssrc: ssrc}, state) do
+    %{state | timestamp: info.ntp_timestamp, ssrc: ssrc}
   end
 
-  defp handle_message(_msg), do: nil
+  defp handle_message(_msg, state), do: state
 
   defp bye(reason) do
     v = 2
