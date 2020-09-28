@@ -143,8 +143,9 @@ defmodule ExRtsp.RTCP do
 
   defp decode_report_blocks(_msg, _blocks), do: {:error, "could not parse message"}
 
-  defp handle_message(%{packet_type: type}, %{server: pid}) do
+  defp handle_message(%{packet_type: :bye}, %{server: pid}) do
     GenServer.cast(pid, {:send_seq, bye("stream ended")})
+    Process.exit(self(), :normal)
   end
 
   defp handle_message(%{packet_type: type}, %{server: pid}) do
