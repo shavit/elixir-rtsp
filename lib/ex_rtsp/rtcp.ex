@@ -150,7 +150,7 @@ defmodule ExRtsp.RTCP do
   end
 
   defp handle_message(%{packet_type: :sr, sender_information: info, ssrc: ssrc}, state) do
-    %{state | timestamp: info.ntp_timestamp, ssrc: ssrc}
+    %{state | timestamp: info.rtp_timestamp, ssrc: ssrc}
   end
 
   defp handle_message(_msg, state), do: state
