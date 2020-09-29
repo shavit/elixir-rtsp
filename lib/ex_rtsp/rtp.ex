@@ -22,7 +22,8 @@ defmodule ExRtsp.RTP do
       socket: socket,
       encoder_socket: encoder_socket,
       tmp_file: tmp_file,
-      job_id: Keyword.get(opts, :job_id)
+      job_id: Keyword.get(opts, :job_id),
+      timestamp: nil
     }
 
     {:ok, state}
@@ -62,5 +63,9 @@ defmodule ExRtsp.RTP do
       ssrc_identifier: ssrc,
       payload: b
     }
+  end
+
+  defp handle_message(%{timestamp: timestamp}, state) do
+    %{state | timestamp: timestamp}
   end
 end
