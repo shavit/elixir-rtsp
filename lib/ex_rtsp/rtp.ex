@@ -39,7 +39,7 @@ defmodule ExRtsp.RTP do
     msg_decoded = decode(msg)
     body = msg_decoded.payload
     Ffmpeg.encode(state.tmp_file, body)
-    handle_message(msg_decoded)
+    state = handle_message(msg_decoded, state)
 
     {:noreply, state}
   end
