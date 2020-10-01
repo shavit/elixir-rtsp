@@ -45,5 +45,13 @@ defmodule ExRtsp.RequestTest do
     test "new_setup/1 creates a setup request" do
       assert %Request{} = Request.new_setup([])
     end
+
+    test "decode/1 decodes a message" do
+      [
+        {<<>>, %Request{body: <<>>}},
+        {<<1, 2, 3>>, %Request{body: <<1, 2, 3>>}}
+      ]
+      |> Enum.each(fn {l, r} -> assert Request.decode(l) == r end)
+    end
   end
 end

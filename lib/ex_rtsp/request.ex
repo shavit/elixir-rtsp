@@ -133,4 +133,11 @@ defmodule ExRtsp.Request do
     url = "rtsp://host/s0/trackID=1"
     new(method: :setup, url: url, transport: option_set_transport_default())
   end
+
+  @doc """
+  decode/1 decodes a message
+  """
+  def decode(encoded_message) do
+    %__MODULE__{body: encoded_message}
+  end
 end
