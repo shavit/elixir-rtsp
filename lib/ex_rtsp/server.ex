@@ -42,5 +42,10 @@ defmodule ExRtsp.Server do
     {:noreply, state}
   end
 
-  defp handle_request(_msg, state), do: state
+  defp handle_request(msg, state) do
+    Logger.info("handle_request/2 #{inspect(msg)}")
+    msg
+
+    state
+  end
 end
