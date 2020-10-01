@@ -33,6 +33,7 @@ defmodule ExRtsp.Server do
   def handle_info({:tcp, _from, msg}, state) do
     Logger.info("New message: #{inspect(msg)}")
     Logger.info(inspect(Response.new(msg)))
+    state = handle_request(msg, state)
     {:noreply, state}
   end
 
@@ -40,4 +41,6 @@ defmodule ExRtsp.Server do
     Logger.info("Connection closed by client")
     {:noreply, state}
   end
+
+  defp handle_request(_msg, state), do: state
 end
