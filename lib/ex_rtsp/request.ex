@@ -4,6 +4,9 @@ defmodule ExRtsp.Request do
   """
 
   defstruct [
+    :version,
+    :method,
+    :resource,
     :header,
     :header_lines,
     :body
@@ -61,7 +64,10 @@ defmodule ExRtsp.Request do
         opts |> Keyword.get(:range) |> header_range(),
         opts |> Keyword.get(:accept) |> header_accept(),
         opts |> Keyword.get(:parameter) |> header_parameter()
-      ]
+      ],
+      method: method,
+      resource: resource,
+      version: @version
     }
   end
 
@@ -138,6 +144,31 @@ defmodule ExRtsp.Request do
   decode/1 decodes a message
   """
   def decode(encoded_message) do
-    %__MODULE__{body: encoded_message}
+    case encoded_message |> String.split("\r\n") |> Enum.filter(&(&1 != "")) do
+      [header | lines] ->
+        %__MODULE__{
+          method: decode_method(header),
+          resource: decode_resource(header),
+          version: decode_version(header),
+          header: header,
+          header_lines: lines,
+          body: encoded_message
+        }
+
+      _ ->
+        {:error, "invalid request"}
+    end
+  end
+
+  defp decode_method(header) do
+    header |> String.split(" ") |> Enum.at(0)
+  end
+
+  defp decode_resource(header) do
+    header |> String.split(" ") |> Enum.at(1)
+  end
+
+  defp decode_version(header) do
+    header |> String.split(" ") |> Enum.at(2)
   end
 end

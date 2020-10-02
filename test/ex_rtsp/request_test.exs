@@ -17,7 +17,10 @@ defmodule ExRtsp.RequestTest do
       assert %ExRtsp.Request{
                body: [],
                header: "OPTIONS * RTSP/1.0",
-               header_lines: ["CSeq: 4", nil, "User-Agent: ExRtsp", nil, nil, nil, nil]
+               header_lines: ["CSeq: 4", nil, "User-Agent: ExRtsp", nil, nil, nil, nil],
+               method: "OPTIONS",
+               resource: "*",
+               version: "RTSP/1.0"
              } == req
     end
 
@@ -48,8 +51,8 @@ defmodule ExRtsp.RequestTest do
 
     test "decode/1 decodes a message" do
       [
-        {<<>>, %Request{body: <<>>}},
-        {<<1, 2, 3>>, %Request{body: <<1, 2, 3>>}}
+        {<<>>, {:error, "invalid request"}},
+#	{"DESCRIBE rtsp://127.0.0.1:8555/s0 RTSP/1.0\r\nCSeq: 0\r\nUser-Agent: ExRtsp\r\n\r\n", %Request{header: "DESCRIBE rtsp://127.0.0.1:8555/s0 RTSP/1.0"}},
       ]
       |> Enum.each(fn {l, r} -> assert Request.decode(l) == r end)
     end
