@@ -52,7 +52,14 @@ defmodule ExRtsp.RequestTest do
     test "decode/1 decodes a message" do
       [
         {<<>>, {:error, "invalid request"}},
-#	{"DESCRIBE rtsp://127.0.0.1:8555/s0 RTSP/1.0\r\nCSeq: 0\r\nUser-Agent: ExRtsp\r\n\r\n", %Request{header: "DESCRIBE rtsp://127.0.0.1:8555/s0 RTSP/1.0"}},
+        {"DESCRIBE rtsp://127.0.0.1:8555/s0 RTSP/1.0\r\nCSeq: 0\r\nUser-Agent: ExRtsp\r\n\r\n",
+         %Request{
+           header: "DESCRIBE rtsp://127.0.0.1:8555/s0 RTSP/1.0",
+	   header_lines: ["CSeq: 0", "User-Agent: ExRtsp"],
+	   method: "DESCRIBE",
+           resource: "rtsp://127.0.0.1:8555/s0",
+           version: "RTSP/1.0"
+         }}
       ]
       |> Enum.each(fn {l, r} -> assert Request.decode(l) == r end)
     end

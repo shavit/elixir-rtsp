@@ -151,8 +151,7 @@ defmodule ExRtsp.Request do
           resource: decode_resource(header),
           version: decode_version(header),
           header: header,
-          header_lines: lines,
-          body: encoded_message
+          header_lines: lines
         }
 
       _ ->
