@@ -4,7 +4,7 @@ defmodule ExRtsp.Server do
   """
   use GenServer
   require Logger
-  alias ExRtsp.Response
+  alias ExRtsp.Request
 
   def start_link(opts) do
     name = Keyword.get(opts, :name, __MODULE__)
@@ -31,9 +31,9 @@ defmodule ExRtsp.Server do
   end
 
   def handle_info({:tcp, _from, msg}, state) do
-    Logger.info("New message: #{inspect(msg)}")
-    Logger.info(inspect(Response.new(msg)))
-    state = handle_request(msg, state)
+    #Logger.info("New message: #{inspect(msg)}")
+    state = msg |> Request.decode() |> handle_request(state)
+
     {:noreply, state}
   end
 
@@ -42,9 +42,8 @@ defmodule ExRtsp.Server do
     {:noreply, state}
   end
 
-  defp handle_request(msg, state) do
-    Logger.info("handle_request/2 #{inspect(msg)}")
-    msg
+  defp handle_request(%Request{} = req, state) do
+    Logger.info("handle_request/2 #{inspect(req)}")
 
     state
   end

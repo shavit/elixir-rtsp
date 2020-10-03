@@ -15,5 +15,18 @@ defmodule ExRtsp.ServerTest do
 
       assert is_nil(lsock) == false
     end
+
+    test "handle_info/2 handles describe message" do
+      from = nil
+      msg = "DESCRIBE rtsp://127.0.0.1:8555/s0 RTSP/1.0\r\nCSeq: 0\r\nUser-Agent: ExRtsp\r\n\r\n"
+
+      state = %{
+        port: 8555,
+        lsock: nil,
+        sock: nil
+      }
+
+      assert {:noreply, %{lsock: nil, port: 8555, sock: nil}} = Server.handle_info({:tcp, from, msg}, state)
+    end
   end
 end
