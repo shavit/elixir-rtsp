@@ -26,7 +26,8 @@ defmodule ExRtsp.ServerTest do
         sock: nil
       }
 
-      assert {:noreply, %{lsock: nil, port: 8555, sock: nil}} = Server.handle_info({:tcp, from, msg}, state)
+      assert {:noreply, %{lsock: nil, port: 8555, sock: nil}} =
+               Server.handle_info({:tcp, from, msg}, state)
     end
   end
 end

@@ -16,6 +16,7 @@ defmodule ExRtsp.Server do
     {:ok, lsock} = :gen_tcp.listen(port, [:binary, {:active, true}])
 
     state = %{
+      cseq: 0,
       port: port,
       lsock: lsock,
       sock: nil
@@ -30,9 +31,9 @@ defmodule ExRtsp.Server do
     {:noreply, %{state | sock: sock}}
   end
 
-  def handle_info({:tcp, _from, msg}, state) do
-    #Logger.info("New message: #{inspect(msg)}")
-    state = msg |> Request.decode() |> handle_request(state)
+  def handle_info({:tcp, from, msg}, state) do
+    Logger.info("New message: #{inspect(msg)}")
+    state = msg |> Request.decode() |> handle_request(from, state)
 
     {:noreply, state}
   end
@@ -42,7 +43,13 @@ defmodule ExRtsp.Server do
     {:noreply, state}
   end
 
-  defp handle_request(%Request{} = req, state) do
+  defp handle_request(%Request{method: "DESCRIBE"}, from, state) do
+    if !is_nil(from), do: :gen_tcp.send(from, "RTSP/1.0 200 OK\r\n\r\n")
+
+    state
+  end
+
+  defp handle_request(%Request{} = req, _from, state) do
     Logger.info("handle_request/2 #{inspect(req)}")
 
     state
