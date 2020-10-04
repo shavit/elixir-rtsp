@@ -9,6 +9,7 @@ defmodule ExRtsp.Request do
     :resource,
     :header,
     :header_lines,
+    :cseq,
     :body
   ]
 
@@ -151,7 +152,8 @@ defmodule ExRtsp.Request do
           resource: decode_resource(header),
           version: decode_version(header),
           header: header,
-          header_lines: lines
+          header_lines: lines,
+          cseq: decode_cseq(lines)
         }
 
       _ ->
@@ -169,5 +171,14 @@ defmodule ExRtsp.Request do
 
   defp decode_version(header) do
     header |> String.split(" ") |> Enum.at(2)
+  end
+
+  defp decode_cseq(header_lines) do
+    header_lines
+    |> Enum.map(fn x -> String.split(x, ": ") end)
+    |> Enum.filter(fn [k, _v] -> "cseq" == String.downcase(k) end)
+    |> List.first()
+    |> List.last()
+    |> String.to_integer()
   end
 end

@@ -58,7 +58,8 @@ defmodule ExRtsp.RequestTest do
            header_lines: ["CSeq: 0", "User-Agent: ExRtsp"],
            method: "DESCRIBE",
            resource: "rtsp://127.0.0.1:8555/s0",
-           version: "RTSP/1.0"
+           version: "RTSP/1.0",
+           cseq: 0
          }},
         {"SETUP rtsp://127.0.0.1:8555/s0 RTSP/1.0\r\nCSeq: 1\r\nUser-Agent: ExRtsp\r\n\r\n",
          %Request{
@@ -66,7 +67,8 @@ defmodule ExRtsp.RequestTest do
            header_lines: ["CSeq: 1", "User-Agent: ExRtsp"],
            method: "SETUP",
            resource: "rtsp://127.0.0.1:8555/s0",
-           version: "RTSP/1.0"
+           version: "RTSP/1.0",
+           cseq: 1
          }}
       ]
       |> Enum.each(fn {l, r} -> assert Request.decode(l) == r end)
