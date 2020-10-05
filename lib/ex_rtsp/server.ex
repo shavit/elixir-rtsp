@@ -19,7 +19,8 @@ defmodule ExRtsp.Server do
       cseq: 0,
       port: port,
       lsock: lsock,
-      sock: nil
+      sock: nil,
+      host: Keyword.get(opts, :host, get_default_host())
     }
 
     {:ok, state, {:continue, :accept_connections}}
@@ -41,6 +42,13 @@ defmodule ExRtsp.Server do
   def handle_info({:tcp_closed, _port}, state) do
     Logger.info("Connection closed by client")
     {:noreply, state}
+  end
+
+  defp get_default_host do
+    case :inet.getif() do
+      {:ok, l} when is_list(l) -> l |> Enum.at(1) |> elem(1) |> Tuple.to_list() |> Enum.join(".")
+      _ -> "127.0.0.1"
+    end
   end
 
   defp handle_request(%Request{method: "DESCRIBE"}, from, state) do
