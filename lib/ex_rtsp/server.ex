@@ -20,7 +20,8 @@ defmodule ExRtsp.Server do
       port: port,
       lsock: lsock,
       sock: nil,
-      host: Keyword.get(opts, :host, get_default_host())
+      host: Keyword.get(opts, :host, get_default_host()),
+      config: Keyword.get(opts, :config, %{}),
     }
 
     {:ok, state, {:continue, :accept_connections}}
