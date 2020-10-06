@@ -4,6 +4,12 @@
 
 > RTSP library
 
+Features:
+  - [x] Client
+  - [x] Server
+  - [ ] RTP transmission
+  - [ ] RTCP transmission
+
 # Quick start
 
 Create a client
