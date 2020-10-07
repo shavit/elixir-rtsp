@@ -59,15 +59,14 @@ defmodule ExRtsp.Client do
   def handle_continue(:dial_rtsp, state) do
     {:ok, sock} = state.host |> String.to_charlist() |> reconnect(state.port)
 
-    req =
+    {res, state} =
       [
         url: build_url(state),
         cseq: state.cseq,
         method: :describe
       ]
       |> Request.new()
-
-    send_req(sock, req)
+      |> send_req(state)
 
     {:noreply, %{state | conn: sock}}
   end
@@ -79,21 +78,21 @@ defmodule ExRtsp.Client do
     :gen_tcp.connect(host, port, opts)
   end
 
-  defp send_req(sock, %Request{} = req) do
+  defp send_req(%Request{} = req, state) do
     req = Request.encode(req)
     Logger.debug("Send request")
-    :gen_tcp.send(sock, req)
+    res = :gen_tcp.send(state.conn, req)
+    {res, %{state | cseq: state.cseq + 1}}
   end
 
   def handle_call({:describe, opts}, _ref, state) do
-    req =
+    {res, state} =
       Request.new(
         url: build_url(state),
         cseq: state.cseq + 1,
         method: :describe
       )
-
-    res = send_req(state.conn, req)
+      |> send_req(state)
 
     {:reply, res, state}
   end
@@ -102,7 +101,7 @@ defmodule ExRtsp.Client do
     transport = Keyword.get(opts, :transport, Request.option_set_transport_default())
     url = state.content_base <> "trackID=1"
 
-    req =
+    {res, state} =
       Request.new(
         url: url,
         cseq: state.cseq + 1,
@@ -110,8 +109,7 @@ defmodule ExRtsp.Client do
         transport: transport,
         accept: Keyword.get(opts, :accept, "application/sdp")
       )
-
-    res = send_req(state.conn, req)
+      |> send_req(state)
 
     {:reply, res, state}
   end
@@ -119,7 +117,7 @@ defmodule ExRtsp.Client do
   def handle_call({:play, opts}, _ref, state) do
     url = state.content_base <> "trackID=1"
 
-    req =
+    {state, res} =
       Request.new(
         url: url,
         cseq: state.cseq + 1,
@@ -128,8 +126,7 @@ defmodule ExRtsp.Client do
         session: state.session_id,
         range: Keyword.get(opts, :range, {10})
       )
-
-    res = send_req(state.conn, req)
+      |> send_req(state)
 
     {:reply, res, state}
   end
@@ -137,7 +134,7 @@ defmodule ExRtsp.Client do
   def handle_call({:pause, _opts}, _ref, state) do
     url = build_url(state) <> "/trackID=1"
 
-    req =
+    {res, state} =
       Request.new(
         url: url,
         cseq: state.cseq + 1,
@@ -145,8 +142,7 @@ defmodule ExRtsp.Client do
         method: :pause,
         session: state.session_id
       )
-
-    res = send_req(state.conn, req)
+      |> send_req(state)
 
     {:reply, res, state}
   end
@@ -154,7 +150,7 @@ defmodule ExRtsp.Client do
   def handle_call({:record, _opts}, _ref, state) do
     url = build_url(state) <> "/trackID=1"
 
-    req =
+    {res, state} =
       Request.new(
         url: url,
         cseq: state.cseq + 1,
@@ -162,8 +158,7 @@ defmodule ExRtsp.Client do
         method: :record,
         session: state.session_id
       )
-
-    res = send_req(state.conn, req)
+      |> send_req(state)
 
     {:reply, res, state}
   end
@@ -171,15 +166,14 @@ defmodule ExRtsp.Client do
   def handle_call({:teardown, _opts}, _ref, state) do
     url = build_url(state) <> "/trackID=1"
 
-    req =
+    {res, state} =
       Request.new(
         url: url,
         cseq: state.cseq + 1,
         method: :record,
         session: state.session_id
       )
-
-    res = send_req(state.conn, req)
+      |> send_req(state)
 
     {:reply, res, state}
   end
@@ -187,7 +181,7 @@ defmodule ExRtsp.Client do
   def handle_call({:set_parameter, opts}, _ref, state) do
     url = build_url(state) <> "/trackID=1"
 
-    req =
+    {res, state} =
       Request.new(
         url: url,
         cseq: state.cseq + 1,
@@ -195,8 +189,7 @@ defmodule ExRtsp.Client do
         session: state.session_id,
         parameter: Keyword.get(opts, :parameter)
       )
-
-    res = send_req(state.conn, req)
+      |> send_req(state)
 
     {:reply, res, state}
   end
@@ -204,12 +197,12 @@ defmodule ExRtsp.Client do
   def handle_call({:send_req, req}, _ref, state) do
     state = %{state | cseq: state.cseq + 1}
 
-    req =
+    {res, state} =
       req
       |> Map.put(:cseq, state.cseq)
       |> Map.put(:session_id, state.session_id)
 
-    res = send_req(state.conn, req)
+    {res, state} = send_req(req, state)
 
     {:reply, res, state}
   end
