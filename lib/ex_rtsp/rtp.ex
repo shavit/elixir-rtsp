@@ -7,6 +7,64 @@ defmodule ExRtsp.RTP do
   alias ExRtsp.Encoder.Ffmpeg
   alias ExRtsp.Encoder.Video
 
+  # https://tools.ietf.org/html/rfc3551#page-32
+  payload_types =
+    %{
+      0 => :pcmu,
+      1 => :reserved,
+      2 => :reserved,
+      3 => :gsm,
+      4 => :g732,
+      5 => :dvi4,
+      6 => :dvi5,
+      7 => :lpc,
+      8 => :pcma,
+      9 => :g722,
+      10 => :l16,
+      11 => :l16,
+      12 => :qcelp,
+      13 => :cn,
+      14 => :mpa,
+      15 => :g728,
+      16 => :dvi4,
+      17 => :dvi4,
+      18 => :g729,
+      19 => :reserved,
+      20 => :unassigned,
+      21 => :unassigned,
+      22 => :unassigned,
+      23 => :unassigned,
+      24 => :unassigned,
+      25 => :celb,
+      26 => :jpeg,
+      27 => :unassigned,
+      28 => :nv,
+      29 => :unassigned,
+      30 => :unassigned,
+      31 => :h261,
+      32 => :mpv,
+      33 => :mp2t,
+      34 => :h263,
+      (35..71) => :unassigned,
+      (72..76) => :reserved,
+      (77..95) => :unassigned,
+      (96..127) => :dynamic
+    }
+    |> Enum.reduce(%{}, fn {k, v}, acc ->
+      case k do
+        %Range{} ->
+          k
+          |> Enum.to_list()
+          |> Enum.reduce(%{}, fn a, acc -> Map.put(acc, a, v) end)
+          |> Enum.into(acc)
+
+        k ->
+          Enum.into(acc, %{k => v})
+      end
+    end)
+
+  @payload_types payload_types
+
   def start_link(opts) do
     name = Keyword.get(opts, :name, __MODULE__)
     GenServer.start_link(__MODULE__, opts, name: name)
@@ -58,7 +116,7 @@ defmodule ExRtsp.RTP do
       extension: x == 1,
       csrc_count: cc,
       marker: m,
-      payload_type: pt,
+      payload_type: get_payload_type(pt),
       sequence: seq,
       timestamp: tm,
       ssrc_identifier: ssrc,
@@ -69,4 +127,6 @@ defmodule ExRtsp.RTP do
   defp handle_message(%{timestamp: timestamp}, state) do
     %{state | timestamp: timestamp}
   end
+
+  defp get_payload_type(n), do: Map.get(@payload_types, n)
 end
