@@ -58,6 +58,7 @@ defmodule ExRtsp.Client do
 
   def handle_continue(:dial_rtsp, state) do
     {:ok, sock} = state.host |> String.to_charlist() |> reconnect(state.port)
+    state = %{state | conn: sock}
 
     {res, state} =
       [
