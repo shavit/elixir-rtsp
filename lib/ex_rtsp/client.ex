@@ -86,7 +86,7 @@ defmodule ExRtsp.Client do
     {res, %{state | cseq: state.cseq + 1}}
   end
 
-  def handle_call({:describe, opts}, _ref, state) do
+  def handle_call({:describe, _opts}, _ref, state) do
     {res, state} =
       Request.new(
         url: build_url(state),
