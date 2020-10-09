@@ -79,9 +79,11 @@ defmodule ExRtsp.Client do
     :gen_tcp.connect(host, port, opts)
   end
 
+  defp send_req(_req, %{conn: nil} = state), do: {{:error, "need to reconnect"}, state}
+
   defp send_req(%Request{} = req, state) do
     req = Request.encode(req)
-    Logger.debug("Send request")
+    Logger.debug(fn -> "Send request #{state.cseq}" end)
     res = :gen_tcp.send(state.conn, req)
     {res, %{state | cseq: state.cseq + 1}}
   end
@@ -252,6 +254,6 @@ defmodule ExRtsp.Client do
   def handle_info({:tcp_closed, _port}, state) do
     Logger.info("TCP closed")
 
-    {:noreply, Map.delete(state, :conn)}
+    {:noreply, %{state | conn: nil}}
   end
 end
