@@ -120,7 +120,7 @@ defmodule ExRtsp.Client do
   def handle_call({:play, opts}, _ref, state) do
     url = state.content_base <> "trackID=1"
 
-    {state, res} =
+    {res, state} =
       Request.new(
         url: url,
         cseq: state.cseq + 1,
@@ -239,7 +239,7 @@ defmodule ExRtsp.Client do
         Logger.error("Error: Route not found /#{base}")
         {:noreply, state}
 
-      %Response{session: session, content_base: nil} ->
+      %Response{session: session, content_base: nil} = resp ->
         {:noreply, %{state | session_id: session}}
 
       %Response{session: session, content_base: content_base} ->
