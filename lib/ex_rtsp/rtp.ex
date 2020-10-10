@@ -96,8 +96,10 @@ defmodule ExRtsp.RTP do
   def handle_info({:udp, _port, _ip, _udp_port, msg}, state) do
     msg_decoded = decode(msg)
     body = msg_decoded.payload
-    Ffmpeg.encode(state.tmp_file, body)
+    # Ffmpeg.encode(state.tmp_file, body)
     state = handle_message(msg_decoded, state)
+    Logger.info("[Client.RTP] #{inspect(msg_decoded)}")
+    Logger.info("[Client.RTP] payload: #{inspect(msg_decoded.payload)}")
 
     {:noreply, state}
   end
@@ -120,9 +122,15 @@ defmodule ExRtsp.RTP do
       sequence: seq,
       timestamp: tm,
       ssrc_identifier: ssrc,
-      payload: b
+      payload: decode_payload(b)
     }
   end
+
+  defp decode_payload(<<f::1, nri::2, type::5, _b::binary>>) do
+    %{f: f, nri: nri, type: type}
+  end
+
+  defp decode_payload(_payload), do: :invalid
 
   defp handle_message(%{timestamp: timestamp}, state) do
     %{state | timestamp: timestamp}

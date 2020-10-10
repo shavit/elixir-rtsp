@@ -84,6 +84,7 @@ defmodule ExRtsp.Client do
   defp send_req(%Request{} = req, state) do
     req = Request.encode(req)
     Logger.debug(fn -> "Send request #{state.cseq}" end)
+
     res = :gen_tcp.send(state.conn, req)
     {res, %{state | cseq: state.cseq + 1}}
   end
