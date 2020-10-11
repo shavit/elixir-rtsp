@@ -22,6 +22,7 @@ defmodule ExRtsp.Response do
 
   Each line has a character and value
   <character>=<value><CR><LF>
+  https://tools.ietf.org/html/rfc4566
   https://en.wikipedia.org/wiki/Session_Description_Protocol
 
   m=  (media name and transport address)

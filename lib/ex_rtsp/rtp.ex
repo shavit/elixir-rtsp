@@ -126,11 +126,30 @@ defmodule ExRtsp.RTP do
     }
   end
 
-  defp decode_payload(<<f::1, nri::2, type::5, _b::binary>>) do
-    %{f: f, nri: nri, type: type}
+  # https://tools.ietf.org/html/rfc6184
+  # https://www.ietf.org/rfc/rfc3984.txt
+  # https://tools.ietf.org/html/rfc3640
+  defp decode_payload(<<f::1, nri::2, type::5, b::binary>>) do
+    data = decode_payload_data(b)
+    %{f: f, nri: nri, type: type, data: data}
   end
 
   defp decode_payload(_payload), do: :invalid
+
+  # https://tools.ietf.org/html/rfc2435
+  defp decode_payload_data(<<t1::8, offset::24, t2::8, q::8, w::8, h::8, b::binary>>) do
+    %{
+      type_specific: t1,
+      fragment_offset: offset,
+      type: t2,
+      quantization: q,
+      width: w,
+      height: h,
+      data: b
+    }
+  end
+
+  defp decode_payload_data(_data), do: :invalid
 
   defp handle_message(%{timestamp: timestamp}, state) do
     %{state | timestamp: timestamp}
