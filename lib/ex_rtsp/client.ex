@@ -50,6 +50,7 @@ defmodule ExRtsp.Client do
       protocol: Keyword.get(opts, :protocol, :tcp),
       rtcp_pid: rtcp_pid,
       rtp_pid: rtp_pid,
+      channels: [],
       session_id: <<>>
     }
 
