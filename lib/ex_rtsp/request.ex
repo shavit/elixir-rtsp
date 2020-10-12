@@ -137,7 +137,7 @@ defmodule ExRtsp.Request do
   Session: <SESSION>
   """
   def new_setup(_resp) do
-    url = "rtsp://host/s0/trackID=1"
+    url = "rtsp://host/s0/trackID=2"
     new(method: :setup, url: url, transport: option_set_transport_default())
   end
 

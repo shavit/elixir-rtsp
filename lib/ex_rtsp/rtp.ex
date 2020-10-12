@@ -127,7 +127,7 @@ defmodule ExRtsp.RTP do
   end
 
   # https://tools.ietf.org/html/rfc6184
-  # https://www.ietf.org/rfc/rfc3984.txt
+  # https://tools.ietf.org/html/rfc3984
   # https://tools.ietf.org/html/rfc3640
   defp decode_payload(<<f::1, nri::2, type::5, b::binary>>) do
     data = decode_payload_data(b)
