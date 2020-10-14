@@ -23,10 +23,13 @@ defmodule ExRtsp.RTPGroup do
     {:ok, state}
   end
 
+  def handle_call(_msg, _ref, state), do: {:reply, {:error, "not implemented"}, state}
+  def handle_cast(_msg, state), do: {:noreply, state}
+  def handle_info(_msg, state), do: {:noreply, state}
+
   def terminate(reason, state) do
     Logger.info("[RTPGroup] Terminated")
 
     reason
   end
-  
 end
