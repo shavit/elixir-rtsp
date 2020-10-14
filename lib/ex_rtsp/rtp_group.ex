@@ -5,6 +5,7 @@ defmodule ExRtsp.RTPGroup do
   use GenServer
   alias ExRtsp.RTCP
   alias ExRtsp.RTP
+  require Logger
 
   def start_link(opts) do
     GenServer.start_link(__MODULE__, opts)
@@ -21,4 +22,11 @@ defmodule ExRtsp.RTPGroup do
 
     {:ok, state}
   end
+
+  def terminate(reason, state) do
+    Logger.info("[RTPGroup] Terminated")
+
+    reason
+  end
+  
 end
