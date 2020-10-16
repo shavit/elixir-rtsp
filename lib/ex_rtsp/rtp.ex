@@ -66,7 +66,6 @@ defmodule ExRtsp.RTP do
   @payload_types payload_types
 
   def start_link(opts) do
-    #name = Keyword.get(opts, :name, __MODULE__)
     GenServer.start_link(__MODULE__, opts)
   end
 
