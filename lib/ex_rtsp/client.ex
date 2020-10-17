@@ -37,9 +37,6 @@ defmodule ExRtsp.Client do
     if is_nil(Keyword.get(opts, :host)),
       do: Logger.warn("Missing client host, using localhost instead")
 
-    {:ok, rtp_pid} = RTP.start_link(server: self())
-    {:ok, rtcp_pid} = RTCP.start_link(server: self())
-
     state = %{
       abs_path: Keyword.get(opts, :abs_path, "/s0"),
       conn: nil,
@@ -48,8 +45,8 @@ defmodule ExRtsp.Client do
       host: Keyword.get(opts, :host, "127.0.0.1"),
       port: opts |> Keyword.get(:port, 554) |> to_string() |> String.to_integer(),
       protocol: Keyword.get(opts, :protocol, :tcp),
-      rtcp_pid: rtcp_pid,
-      rtp_pid: rtp_pid,
+      rtcp_pid: nil,
+      rtp_pid: nil,
       channels: [],
       session_id: <<>>
     }
@@ -69,6 +66,10 @@ defmodule ExRtsp.Client do
       ]
       |> Request.new()
       |> send_req(state)
+
+    {:ok, rtp_pid} = RTP.start_link(server: self())
+    {:ok, rtcp_pid} = RTCP.start_link(server: self())
+    state = %{state | rtp_pid: rtp_pid, rtcp_pid: rtcp_pid}
 
     {:noreply, %{state | conn: sock}}
   end
