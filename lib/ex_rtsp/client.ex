@@ -67,7 +67,7 @@ defmodule ExRtsp.Client do
       |> Request.new()
       |> send_req(state)
 
-    {:ok, rtp_pid} = RTP.start_link(server: self())
+    {:ok, rtp_pid} = RTP.start_link(server: self(), port: 3000)
     {:ok, rtcp_pid} = RTCP.start_link(server: self())
     state = %{state | rtp_pid: rtp_pid, rtcp_pid: rtcp_pid}
 
