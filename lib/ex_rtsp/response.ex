@@ -44,7 +44,7 @@ defmodule ExRtsp.Response do
     else
       %__MODULE__{
         header: header,
-        body: body,
+        body: decode_body(body),
         status: get_status_code(header),
         content_base: get_content_base_value(header),
         rtp_info: get_rtp_value(header),
@@ -53,6 +53,23 @@ defmodule ExRtsp.Response do
         server_rtsp_port: header |> get_server_ports() |> Enum.at(1)
       }
     end
+  end
+
+  defp decode_body(kv_list) do
+    kv_list
+    |> Enum.reduce(%{prev: nil}, fn [k | v], acc ->
+      if k == "a" && Enum.any?(v) do
+        Map.update(acc, acc.prev, [v], fn x -> x ++ [v] end)
+      else
+        mkey =
+          case List.first(v) do
+            nil -> nil
+            v -> v |> String.split() |> List.first()
+          end
+
+        %{acc | prev: mkey}
+      end
+    end)
   end
 
   defp has_vaild_body([""]), do: false
