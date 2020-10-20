@@ -28,27 +28,7 @@ defmodule ExRtsp.ResponseTest do
   end
 
   test "decode/1 decodes media" do
-    resp = "RTSP/1.0 200 OK\r
-v=0
-o=- 2955910 0 IN IP4 192.168.2.7
-s=s0
-u=www.evostream.com
-e=contact@evostream.com
-c=IN IP4 192.168.2.7
-t=0 0
-a=recvonly
-a=control:*
-a=range:npt=now-
-m=audio 0 RTP/AVP 96
-a=recvonly
-a=rtpmap:96 mpeg4-generic/48000/1
-a=control:trackID=1
-a=fmtp:96 streamtype=5; profile-level-id=15; mode=AAC-hbr; config=1188; SizeLength=13; IndexLength=3; IndexDeltaLength=3;
-m=video 0 RTP/AVP 97
-a=recvonly
-a=control:trackID=2
-a=rtpmap:97 H264/90000
-a=fmtp:97 profile-level-id=4d0029; packetiza\r\n\r\n"
-    assert %Response{} = Response.new(resp)
+    resp = "RTSP/1.0 200 OK\r\nCSeq: 0\r\nCache-Control: no-store\r\n\r\nv=0\r\no=- 2955910 0 IN IP4 192.168.2.7\r\ns=s0\r\nu=www.example.com\r\ne=exampl@email.com\r\nc=IN IP4 192.168.2.7\r\nt=0 0\r\na=recvonly\r\na=control:*\r\na=range:npt=now-\r\nm=audio 0 RTP/AVP 96\r\na=recvonly\r\na=rtpmap:96 mpeg4-generic/48000/1\r\na=control:trackID=1\r\na=fmtp:96 streamtype=5; profile-level-id=15; mode=AAC-hbr; config=1188; SizeLength=13; IndexLength=3; IndexDeltaLength=3;\r\nm=video 0 RTP/AVP 97\r\na=recvonly\r\na=control:trackID=2\r\na=rtpmap:97 H264/90000\r\na=fmtp:97 profile-level-id=4d0029; packetiza"
+    assert %Response{} = struct = Response.new(resp)
   end
 end
