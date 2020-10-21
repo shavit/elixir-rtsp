@@ -46,6 +46,7 @@ defmodule ExRtsp.Response do
       %__MODULE__{
         header: header,
         body: decode_body(body),
+        media: decode_media(body),
         status: get_status_code(header),
         content_base: get_content_base_value(header),
         rtp_info: get_rtp_value(header),
@@ -71,6 +72,47 @@ defmodule ExRtsp.Response do
         %{acc | prev: mkey}
       end
     end)
+  end
+
+  defp decode_media(kv_list) do
+    kv_list
+    |> Enum.reduce(%{prev: nil}, fn [k | v], acc ->
+      if k == "a" && Enum.any?(v) do
+        Map.update(acc, acc.prev, [v], fn x -> x ++ [v] end)
+      else
+        mkey =
+          case List.first(v) do
+            nil -> nil
+            v -> v |> String.split() |> List.first()
+          end
+
+        %{acc | prev: mkey}
+      end
+    end)
+    |> Enum.reduce(%{}, fn {k, v} = a, acc ->
+      Enum.into(%{k => decode_media_property(a)}, acc)
+    end)
+  end
+
+  defp decode_media_property({"audio", v}) do
+    %{
+      track_id: decode_media_get_track(v)
+    }
+  end
+
+  defp decode_media_property({"video", v}) do
+    %{
+      track_id: decode_media_get_track(v)
+    }
+  end
+
+  defp decode_media_property({k, v}), do: {k, v}
+
+  defp decode_media_get_track(props) when is_list(props) do
+    props
+    |> Enum.filter(fn [h | t] -> h == "control:trackID" end)
+    |> Enum.map(fn [k, v] -> String.to_integer(v) end)
+    |> List.first()
   end
 
   defp has_vaild_body([""]), do: false
