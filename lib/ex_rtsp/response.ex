@@ -7,6 +7,7 @@ defmodule ExRtsp.Response do
     :status,
     :header,
     :body,
+    :media,
     :content_base,
     :rtp_info,
     :session,
