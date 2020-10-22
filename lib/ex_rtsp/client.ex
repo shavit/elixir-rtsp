@@ -48,7 +48,8 @@ defmodule ExRtsp.Client do
       rtcp_pid: nil,
       rtp_pid: nil,
       channels: [],
-      session_id: <<>>
+      session_id: <<>>,
+      media: %{}
     }
 
     {:ok, state, {:continue, :dial_rtsp}}
@@ -245,8 +246,10 @@ defmodule ExRtsp.Client do
       %Response{session: session, content_base: nil} = resp ->
         {:noreply, %{state | session_id: session}}
 
-      %Response{session: session, content_base: content_base} ->
-        {:noreply, %{state | session_id: session, content_base: content_base}}
+      %Response{session: session, content_base: content_base, media: media} ->
+        media = Map.take(media, ["audio", "video"])
+        state = %{state | session_id: session, content_base: content_base, media: media}
+        {:noreply, state}
 
       {:error, reason} ->
         Logger.error("Error: #{reason}: #{inspect(msg)}")
