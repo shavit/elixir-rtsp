@@ -68,7 +68,10 @@ defmodule ExRtsp.Client do
       |> Request.new()
       |> send_req(state)
 
-    {:noreply, %{state | conn: sock}}
+    {:ok, rtp_pid} = RTP.start_link(server: self(), port: 3000)
+    {:ok, rtcp_pid} = RTCP.start_link(server: self(), port: 3001)
+
+    {:noreply, %{state | conn: sock, rtp_pid: rtp_pid, rtcp_pid: rtcp_pid}}
   end
 
   defp build_url(state), do: "rtsp://#{state.host}:#{state.port}#{state.abs_path}"
@@ -79,10 +82,6 @@ defmodule ExRtsp.Client do
   end
 
   defp connect_to_media({medium, props}) do
-    # {:ok, rtp_pid} = RTP.start_link(server: self(), port: 3000)
-    # {:ok, rtcp_pid} = RTCP.start_link(server: self(), port: 3001)
-
-    # %{state | rtp_pid: rtp_pid, rtcp_pid: rtcp_pid}
     props |> Map.put(:medium, medium)
   end
 
@@ -110,7 +109,8 @@ defmodule ExRtsp.Client do
 
   def handle_call({:setup, opts}, _ref, state) do
     transport = Keyword.get(opts, :transport, Request.option_set_transport_default())
-    url = state.content_base <> "trackID=1"
+    trackId = state.media |> List.last() |> Map.get(:track_id)
+    url = state.content_base <> "trackID=#{trackId}"
 
     {res, state} =
       Request.new(
@@ -126,7 +126,8 @@ defmodule ExRtsp.Client do
   end
 
   def handle_call({:play, opts}, _ref, state) do
-    url = state.content_base <> "trackID=1"
+    trackId = state.media |> List.last() |> Map.get(:track_id)
+    url = state.content_base <> "trackID=#{trackId}"
 
     {res, state} =
       Request.new(
@@ -143,7 +144,8 @@ defmodule ExRtsp.Client do
   end
 
   def handle_call({:pause, _opts}, _ref, state) do
-    url = build_url(state) <> "/trackID=1"
+    trackId = state.media |> List.last() |> Map.get(:track_id)
+    url = state.content_base <> "trackID=#{trackId}"
 
     {res, state} =
       Request.new(
