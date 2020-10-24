@@ -97,14 +97,16 @@ defmodule ExRtsp.Response do
   defp decode_media_property({"audio", v}) do
     %{
       track_id: decode_media_get_track(v),
-      fmtp: decode_media_get_rtpmap(v)
+      rtpmap: decode_media_get_rtpmap(v),
+      fmtp: decode_media_get_fmtp(v)
     }
   end
 
   defp decode_media_property({"video", v}) do
     %{
       track_id: decode_media_get_track(v),
-      fmtp: decode_media_get_rtpmap(v)
+      rtpmap: decode_media_get_rtpmap(v),
+      fmtp: decode_media_get_fmtp(v)
     }
   end
 
@@ -124,6 +126,12 @@ defmodule ExRtsp.Response do
     |> List.first()
     |> String.split()
     |> List.last()
+  end
+
+  defp decode_media_get_fmtp(props) when is_list(props) do
+    props
+    |> Enum.filter(fn x -> x |> List.first() |> String.contains?("fmtp") end)
+    |> List.first()
   end
 
   defp has_vaild_body([""]), do: false
