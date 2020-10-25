@@ -109,8 +109,8 @@ defmodule ExRtsp.Client do
 
   def handle_call({:setup, opts}, _ref, state) do
     transport = Keyword.get(opts, :transport, Request.option_set_transport_default())
-    trackId = state.media |> List.last() |> Map.get(:track_id)
-    url = state.content_base <> "trackID=#{trackId}"
+    track_id = state.media |> List.last() |> Map.get(:track_id)
+    url = state.content_base <> "trackID=#{track_id}"
 
     {res, state} =
       Request.new(
@@ -126,8 +126,8 @@ defmodule ExRtsp.Client do
   end
 
   def handle_call({:play, opts}, _ref, state) do
-    trackId = state.media |> List.last() |> Map.get(:track_id)
-    url = state.content_base <> "trackID=#{trackId}"
+    track_id = state.media |> List.last() |> Map.get(:track_id)
+    url = state.content_base <> "trackID=#{track_id}"
 
     {res, state} =
       Request.new(
@@ -144,8 +144,8 @@ defmodule ExRtsp.Client do
   end
 
   def handle_call({:pause, _opts}, _ref, state) do
-    trackId = state.media |> List.last() |> Map.get(:track_id)
-    url = state.content_base <> "trackID=#{trackId}"
+    track_id = state.media |> List.last() |> Map.get(:track_id)
+    url = state.content_base <> "trackID=#{track_id}"
 
     {res, state} =
       Request.new(
