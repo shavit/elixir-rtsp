@@ -90,7 +90,10 @@ defmodule ExRtsp.Response do
       end
     end)
     |> Enum.reduce(%{}, fn {k, v} = a, acc ->
-      Enum.into(%{k => decode_media_property(a)}, acc)
+      case decode_media_property(a) do
+        %{} = m -> Enum.into(%{k => m}, acc)
+        _ -> acc
+      end
     end)
   end
 
@@ -110,6 +113,7 @@ defmodule ExRtsp.Response do
     }
   end
 
+  defp decode_media_property({:prev, v}), do: nil
   defp decode_media_property({k, v}), do: {k, v}
 
   defp decode_media_get_track(props) when is_list(props) do
