@@ -133,9 +133,14 @@ defmodule ExRtsp.Response do
   end
 
   defp decode_media_get_fmtp(props) when is_list(props) do
-    props
+    case props
     |> Enum.filter(fn x -> x |> List.first() |> String.contains?("fmtp") end)
-    |> List.first()
+    |> List.first() do
+      [_h|_t] = l -> l
+	|> Enum.join(" ")
+	|> String.split(";")
+      l -> l
+    end
   end
 
   defp has_vaild_body([""]), do: false
