@@ -139,6 +139,7 @@ defmodule ExRtsp.Response do
       [_h|_t] = l -> l
 	|> Enum.join(" ")
 	|> String.split(";")
+	|> Enum.map(&String.trim/1)
       l -> l
     end
   end
