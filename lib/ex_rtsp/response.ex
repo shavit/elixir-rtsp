@@ -134,7 +134,7 @@ defmodule ExRtsp.Response do
 
   defp decode_media_get_fmtp(props) when is_list(props) do
     case props
-         |> Enum.filter(fn x -> x |> List.first() |> String.contains?("fmtp") end)
+         |> Enum.filter(fn [h | _t] -> h |> String.contains?("fmtp") end)
          |> List.first() do
       [_h | _t] = l ->
         l
