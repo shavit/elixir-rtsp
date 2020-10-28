@@ -140,23 +140,25 @@ defmodule ExRtsp.Response do
         l
         |> Enum.join(" ")
         |> String.split(";")
-        |> Enum.map(fn x ->
-          if String.contains?(x, "fmtp") do
-            [a, b, c] = String.split(x, " ")
-
-            [
-              a |> String.split(":") |> Enum.join(" "),
-              Enum.join([b, c], " ")
-            ]
-          else
-            x
-          end
-        end)
+        |> Enum.map(&decode_media_get_fmtp_pair/1)
         |> List.flatten()
         |> Enum.map(&String.trim/1)
 
       l ->
         l
+    end
+  end
+
+  defp decode_media_get_fmtp_pair(x) do
+    if String.contains?(x, "fmtp") do
+      [a, b, c] = String.split(x, " ")
+
+      [
+        a |> String.split(":") |> Enum.join(" "),
+        Enum.join([b, c], " ")
+      ]
+    else
+      x
     end
   end
 
