@@ -142,8 +142,9 @@ defmodule ExRtsp.Response do
         |> String.split(";")
         |> Enum.map(&decode_media_get_fmtp_pair/1)
         |> List.flatten()
+        |> Enum.filter(&(&1 != ""))
         |> Enum.map(&String.trim/1)
-	|> Enum.map(&(&1 |> String.split() |> List.to_tuple()))
+        |> Enum.map(&(&1 |> String.split() |> List.to_tuple()))
 
       l ->
         l
