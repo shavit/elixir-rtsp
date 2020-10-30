@@ -48,7 +48,7 @@ defmodule ExRtsp.Response do
       {:error, "invalid response"}
     else
       %__MODULE__{
-	name: get_session_name(body),
+        name: get_session_name(body),
         header: header,
         body: decode_body(body),
         media: decode_media(body),
@@ -192,7 +192,7 @@ defmodule ExRtsp.Response do
   defp get_session_name(body) when is_list(body) do
     body
     |> Enum.filter(fn [k | _v] -> k == "s" end)
-    |> List.first()
+    |> Enum.at(0, [])
     |> List.last()
   end
 
