@@ -1,10 +1,14 @@
 defmodule ExRtsp.Response do
   @moduledoc """
   Documentation for `ExRtsp.Response`.
+
+  SDP: Session Description Protocol
   """
 
   defstruct [
     :status,
+    :name,
+    :information,
     :header,
     :body,
     :media,
@@ -44,6 +48,7 @@ defmodule ExRtsp.Response do
       {:error, "invalid response"}
     else
       %__MODULE__{
+	name: get_session_name(body),
         header: header,
         body: decode_body(body),
         media: decode_media(body),
@@ -183,6 +188,16 @@ defmodule ExRtsp.Response do
   end
 
   defp get_status_code(_header), do: nil
+
+  defp get_session_name(body) when is_list(body) do
+    body
+    |> Enum.filter(fn [k | _v] -> k == "s" end)
+    |> List.first()
+    |> List.last()
+  end
+
+  defp get_session_name(_body), do: nil
+  defp get_session_information(_body), do: nil
 
   defp get_content_base_value(header) do
     case header |> Enum.filter(&filter_content_base_key/1) |> List.first() do
