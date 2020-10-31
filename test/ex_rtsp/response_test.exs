@@ -31,11 +31,8 @@ defmodule ExRtsp.ResponseTest do
     resp =
       "RTSP/1.0 200 OK\r\nCSeq: 0\r\nCache-Control: no-store\r\n\r\nv=0\r\no=- 2955910 0 IN IP4 192.168.2.7\r\ns=s0\r\nu=www.example.com\r\ne=exampl@email.com\r\nc=IN IP4 192.168.2.7\r\nt=0 0\r\na=recvonly\r\na=control:*\r\na=range:npt=now-\r\nm=audio 0 RTP/AVP 96\r\na=recvonly\r\na=rtpmap:96 mpeg4-generic/48000/1\r\na=control:trackID=1\r\na=fmtp:96 streamtype=5; profile-level-id=15; mode=AAC-hbr; config=1188; SizeLength=13; IndexLength=3; IndexDeltaLength=3;\r\nm=video 0 RTP/AVP 97\r\na=recvonly\r\na=control:trackID=2\r\na=rtpmap:97 H264/90000\r\na=fmtp:97 profile-level-id=4d0029; packetiza"
 
-    assert %Response{body: body} = Response.new(resp)
-    assert body |> Map.get("audio") |> is_list
-    assert body |> Map.get("video") |> is_list
-
     assert %Response{media: media} = Response.new(resp)
-    assert is_map(media)
+    assert media |> Map.get("audio") |> is_map
+    assert media |> Map.get("video") |> is_map
   end
 end

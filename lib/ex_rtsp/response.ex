@@ -10,7 +10,6 @@ defmodule ExRtsp.Response do
     :name,
     :information,
     :header,
-    :body,
     :media,
     :content_base,
     :rtp_info,
@@ -50,7 +49,6 @@ defmodule ExRtsp.Response do
       %__MODULE__{
         name: get_session_name(body),
         header: header,
-        body: decode_body(body),
         media: decode_media(body),
         status: get_status_code(header),
         content_base: get_content_base_value(header),
@@ -60,24 +58,6 @@ defmodule ExRtsp.Response do
         server_rtsp_port: header |> get_server_ports() |> Enum.at(1)
       }
     end
-  end
-
-  defp decode_body(kv_list) do
-    kv_list
-    |> Enum.reduce(%{prev: nil}, fn [k | v], acc ->
-      if k == "a" && Enum.any?(v) do
-        Map.update(acc, acc.prev, [v], fn x -> x ++ [v] end)
-      else
-        mkey =
-          case List.first(v) do
-            nil -> nil
-            v -> v |> String.split() |> List.first()
-          end
-
-        %{acc | prev: mkey}
-      end
-    end)
-    |> Map.drop([:prev])
   end
 
   defp decode_media(kv_list) do
