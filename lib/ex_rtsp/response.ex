@@ -77,6 +77,7 @@ defmodule ExRtsp.Response do
         %{acc | prev: mkey}
       end
     end)
+    |> Map.drop([:prev])
   end
 
   defp decode_media(kv_list) do
