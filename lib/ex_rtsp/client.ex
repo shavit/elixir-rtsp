@@ -45,8 +45,6 @@ defmodule ExRtsp.Client do
       host: Keyword.get(opts, :host, "127.0.0.1"),
       port: opts |> Keyword.get(:port, 554) |> to_string() |> String.to_integer(),
       protocol: Keyword.get(opts, :protocol, :tcp),
-      rtcp_pid: nil,
-      rtp_pid: nil,
       channels: [],
       session_id: <<>>,
       media: %{}
@@ -96,9 +94,7 @@ defmodule ExRtsp.Client do
       state
       | session_id: resp.session,
         content_base: resp.content_base,
-        media: media,
-        rtp_pid: rtp_pid,
-        rtcp_pid: rtcp_pid
+        media: media
     }
   end
 
@@ -235,20 +231,6 @@ defmodule ExRtsp.Client do
     {res, state} = send_req(req, state)
 
     {:reply, res, state}
-  end
-
-  def handle_call(%{protocol: :tcp, rtcp_pid: rtcp, rtp_pid: rtp}, _ref, state) do
-    GenServer.call(rtcp, :stop)
-    GenServer.call(rtp, :stop)
-
-    {:reply, state, state}
-  end
-
-  def handle_call(_msg, _ref, state) do
-    GenServer.call(state.rtcp_pid, :stop)
-    GenServer.call(state.rtp_pid, :stop)
-
-    {:reply, nil, state}
   end
 
   def handle_cast({:send_seq, req}, state) do
