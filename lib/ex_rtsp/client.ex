@@ -68,10 +68,7 @@ defmodule ExRtsp.Client do
       |> Request.new()
       |> send_req(state)
 
-    {:ok, rtp_pid} = RTP.start_link(server: self(), port: 3000)
-    {:ok, rtcp_pid} = RTCP.start_link(server: self(), port: 3001)
-
-    {:noreply, %{state | conn: sock, rtp_pid: rtp_pid, rtcp_pid: rtcp_pid}}
+    {:noreply, %{state | conn: sock}}
   end
 
   defp build_url(state), do: "rtsp://#{state.host}:#{state.port}#{state.abs_path}"
@@ -83,6 +80,26 @@ defmodule ExRtsp.Client do
 
   defp connect_to_media({medium, props}) do
     props |> Map.put(:medium, medium)
+  end
+
+  defp handle_describe(%Response{} = resp, state) do
+    media =
+      resp
+      |> Map.get(:media, %{})
+      |> Map.take(["audio", "video"])
+      |> Enum.map(&connect_to_media/1)
+
+    {:ok, rtp_pid} = RTP.start_link(server: self(), port: 3000)
+    {:ok, rtcp_pid} = RTCP.start_link(server: self(), port: 3001)
+
+    %{
+      state
+      | session_id: resp.session,
+        content_base: resp.content_base,
+        media: media,
+        rtp_pid: rtp_pid,
+        rtcp_pid: rtcp_pid
+    }
   end
 
   defp send_req(_req, %{conn: nil} = state), do: {{:error, "need to reconnect"}, state}
@@ -252,9 +269,8 @@ defmodule ExRtsp.Client do
       %Response{session: session, content_base: nil} = resp ->
         {:noreply, %{state | session_id: session}}
 
-      %Response{session: session, content_base: content_base, media: media} ->
-        media = media |> Map.take(["audio", "video"]) |> Enum.map(&connect_to_media/1)
-        state = %{state | session_id: session, content_base: content_base, media: media}
+      %Response{media: _media} = resp ->
+        state = handle_describe(resp, state)
         {:noreply, state}
 
       {:error, reason} ->
