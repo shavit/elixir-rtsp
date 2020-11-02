@@ -12,8 +12,8 @@ defmodule ExRtsp.RTPGroup do
   end
 
   def init(opts) do
-    {:ok, rtp_pid} = RTP.start_link(server: self())
-    {:ok, rtcp_pid} = RTCP.start_link(server: self())
+    {:ok, rtp_pid} = RTP.start_link(server: self(), port: 3000)
+    {:ok, rtcp_pid} = RTCP.start_link(server: self(), port: 3001)
 
     state = %{
       rtp_pid: rtp_pid,
