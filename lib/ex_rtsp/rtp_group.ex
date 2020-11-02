@@ -2,34 +2,22 @@ defmodule ExRtsp.RTPGroup do
   @moduledoc """
   Documentation for `ExRtsp.RTPGroup`.
   """
-  use GenServer
+  use Supervisor
   alias ExRtsp.RTCP
   alias ExRtsp.RTP
   require Logger
 
   def start_link(opts) do
-    GenServer.start_link(__MODULE__, opts)
+    Supervisor.start_link(__MODULE__, opts)
   end
 
+  @impl true
   def init(opts) do
-    {:ok, rtp_pid} = RTP.start_link(server: self(), port: 3000)
-    {:ok, rtcp_pid} = RTCP.start_link(server: self(), port: 3001)
+    children = [
+      {RTP, [opts]},
+      {RTCP, [opts]}
+    ]
 
-    state = %{
-      rtp_pid: rtp_pid,
-      rtcp_pid: rtcp_pid
-    }
-
-    {:ok, state}
-  end
-
-  def handle_call(_msg, _ref, state), do: {:reply, {:error, "not implemented"}, state}
-  def handle_cast(_msg, state), do: {:noreply, state}
-  def handle_info(_msg, state), do: {:noreply, state}
-
-  def terminate(reason, state) do
-    Logger.info("[RTPGroup] Terminated")
-
-    reason
+    Supervisor.init(children, strategy: :one_for_all)
   end
 end
