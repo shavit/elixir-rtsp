@@ -253,8 +253,7 @@ defmodule ExRtsp.Client do
         {:noreply, %{state | session_id: session}}
 
       %Response{media: _media} = resp ->
-        state = handle_describe(resp, state)
-        {:noreply, state}
+        {:noreply, handle_describe(resp, state)}
 
       {:error, reason} ->
         Logger.error("Error: #{reason}: #{inspect(msg)}")
