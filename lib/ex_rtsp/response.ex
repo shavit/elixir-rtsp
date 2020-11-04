@@ -116,6 +116,7 @@ defmodule ExRtsp.Response do
     |> List.first()
     |> String.split()
     |> List.last()
+    |> String.split("/")
   end
 
   defp decode_media_get_fmtp(props) when is_list(props) do
