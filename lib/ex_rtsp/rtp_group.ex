@@ -20,4 +20,6 @@ defmodule ExRtsp.RTPGroup do
 
     Supervisor.init(children, strategy: :one_for_all)
   end
+
+  def handle_call(:ping, _ref, state), do: {:reply, :pong, state}
 end
