@@ -88,7 +88,7 @@ defmodule ExRtsp.Client do
       |> Enum.map(&connect_to_media/1)
 
     # medium = List.first(media)
-    medium = media |> Enum.filter(&(&1.medium == "video")) |> List.first()
+    medium = get_medium("video")
     {:ok, _rtp_pid} = RTP.start_link(server: self(), port: 3000, medium: medium)
     {:ok, _rtcp_pid} = RTCP.start_link(server: self(), port: 3001, medium: medium)
 
@@ -98,6 +98,10 @@ defmodule ExRtsp.Client do
         content_base: resp.content_base,
         media: media
     }
+  end
+
+  defp get_medium(media, name) do
+    media |> Enum.filter(&(&1.medium == name)) |> List.first()
   end
 
   defp send_req(_req, %{conn: nil} = state), do: {{:error, "need to reconnect"}, state}
