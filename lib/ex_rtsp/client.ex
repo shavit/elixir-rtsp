@@ -47,7 +47,8 @@ defmodule ExRtsp.Client do
       protocol: Keyword.get(opts, :protocol, :tcp),
       channels: [],
       session_id: <<>>,
-      media: %{}
+      media: %{},
+      sup: nil
     }
 
     {:ok, state, {:continue, :dial_rtsp}}
