@@ -13,9 +13,12 @@ defmodule ExRtsp.RTPGroup do
 
   @impl true
   def init(opts) do
+    rtp_port = Keyword.get(opts, :port)
+    rtcp_port = rtp_port + 1
+
     children = [
-      {RTP, [opts]},
-      {RTCP, [opts]}
+      {RTP, [Keyword.put(opts, :port, rtp_port)]},
+      {RTCP, [Keyword.put(opts, :port, rtcp_port)]}
     ]
 
     Supervisor.init(children, strategy: :one_for_all)
