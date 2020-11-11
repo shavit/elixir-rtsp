@@ -5,8 +5,7 @@ defmodule ExRtsp.Client do
   use GenServer
   alias ExRtsp.Request
   alias ExRtsp.Response
-  alias ExRtsp.RTCP
-  alias ExRtsp.RTP
+  alias ExRtsp.RTPGroup
   require Logger
 
   @api_calls [
@@ -90,14 +89,14 @@ defmodule ExRtsp.Client do
 
     # medium = List.first(media)
     medium = get_medium(media, "video")
-    {:ok, _rtp_pid} = RTP.start_link(server: self(), port: 3000, medium: medium)
-    {:ok, _rtcp_pid} = RTCP.start_link(server: self(), port: 3001, medium: medium)
+    {:ok, sup} = RTPGroup.start_link(server: self, medium: medium, port: 3000)
 
     %{
       state
       | session_id: resp.session,
         content_base: resp.content_base,
-        media: media
+        media: media,
+        sup: sup
     }
   end
 
