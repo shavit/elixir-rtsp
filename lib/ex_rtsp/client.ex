@@ -88,8 +88,8 @@ defmodule ExRtsp.Client do
       |> Enum.map(&connect_to_media/1)
 
     # medium = List.first(media)
-b    medium = get_medium(media, "video")
-    {:ok, sup} = RTPGroup.start_link(server: self, medium: medium, port: 3000)
+    medium = get_medium(media, "video")
+    {:ok, sup} = RTPGroup.start_link(server: self(), medium: medium, port: 3000)
 
     %{
       state
