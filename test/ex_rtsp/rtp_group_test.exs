@@ -12,6 +12,11 @@ defmodule ExRtsp.RTPGroupTest do
       assert {:ok, pid} = RTPGroup.start_link(opts)
       children = Supervisor.which_children(pid)
       assert 2 == Enum.count(children)
+
+      Enum.each(children, fn {_module, _pid, child, opts} ->
+        assert :worker == child
+        assert is_list(opts)
+      end)
     end
   end
 end
