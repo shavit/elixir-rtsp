@@ -3,9 +3,9 @@ defmodule ExRtsp.Client do
   Documentation for `ExRtsp.Client`.
   """
   use GenServer
+  alias ExRtsp.RTPGroup
   alias ExRtsp.SIP.Request
   alias ExRtsp.SIP.Response
-  alias ExRtsp.RTPGroup
   require Logger
 
   @api_calls [
