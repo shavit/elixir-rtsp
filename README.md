@@ -5,8 +5,10 @@
 > RTSP library
 
 Features:
-  - [x] Client
-  - [x] Server
+  - [x] SIP decoder
+  - [x] SIP encoder
+  - [x] RTSP Client
+  - [x] RTSP Server
   - [ ] RTP transmission
   - [ ] RTCP transmission
 
@@ -35,7 +37,7 @@ Cache-Control: no-store
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
+If [available in Hex](https://hex.pm/packages/ex_rtsp), the package can be installed
 by adding `ex_rtsp` to your list of dependencies in `mix.exs`:
 
 ```elixir
@@ -47,6 +49,6 @@ end
 ```
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/ex_rtsp](https://hexdocs.pm/ex_rtsp).
+and published on [HexDocs](https://hex.pm/packages/ex_rtsp). Once published, the docs can
+be found at [https://hexdocs.pm/ex_rtsp](https://hex.pm/packages/ex_rtsp).
 
