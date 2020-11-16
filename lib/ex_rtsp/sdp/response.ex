@@ -8,6 +8,7 @@ defmodule ExRtsp.SDP.Response do
   defstruct [
     :status,
     :name,
+    :cseq,
     :information,
     :header,
     :media,
@@ -268,5 +269,25 @@ defmodule ExRtsp.SDP.Response do
     Enum.filter(header_list, fn x ->
       String.downcase(key) == x |> List.pop_at(0) |> elem(0) |> String.downcase()
     end)
+  end
+
+  @doc """
+  encode/1 encodes a response
+  """
+  def encode(%__MODULE__{} = struct) do
+    [
+      ["RTSP/1.0", get_status_for_code(struct.status), "\r\n"],
+      ["CSeq:", struct.cseq],
+      ["\r\n\r\n"]
+    ]
+    |> Enum.map(&Enum.join(&1, " "))
+    |> Enum.join()
+  end
+
+  defp get_status_for_code(status) when is_number(status) do
+    case status do
+      200 -> "#{status} OK"
+      _ -> "#{status}"
+    end
   end
 end

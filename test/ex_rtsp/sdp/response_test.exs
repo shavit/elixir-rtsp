@@ -36,4 +36,13 @@ defmodule ExRtsp.SDP.ResponseTest do
     assert media |> Map.get("audio") |> is_map
     assert media |> Map.get("video") |> is_map
   end
+
+  test "encode/1 encodes a response" do
+    resp = %Response{
+      cseq: 2,
+      status: 200
+    }
+
+    assert Response.encode(resp) == "RTSP/1.0 200 OK \r\nCSeq: 2\r\n\r\n"
+  end
 end
