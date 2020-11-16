@@ -6,9 +6,9 @@
 
 Features:
   - [x] SIP decoder
-  - [x] SIP encoder
+  - [ ] SIP encoder
   - [x] RTSP Client
-  - [x] RTSP Server
+  - [ ] RTSP Server
   - [ ] RTP transmission
   - [ ] RTCP transmission
 
