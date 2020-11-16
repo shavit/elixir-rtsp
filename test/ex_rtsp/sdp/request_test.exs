@@ -1,7 +1,7 @@
-defmodule ExRtsp.SIP.RequestTest do
+defmodule ExRtsp.SDP.RequestTest do
   use ExUnit.Case
-  doctest ExRtsp.SIP.Request
-  alias ExRtsp.SIP.Request
+  doctest ExRtsp.SDP.Request
+  alias ExRtsp.SDP.Request
 
   describe "request" do
     test "new/1 creates a request" do

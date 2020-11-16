@@ -4,7 +4,7 @@ defmodule ExRtsp.Server do
   """
   use GenServer
   require Logger
-  alias ExRtsp.SIP.Request
+  alias ExRtsp.SDP.Request
 
   def start_link(opts) do
     name = Keyword.get(opts, :name, __MODULE__)

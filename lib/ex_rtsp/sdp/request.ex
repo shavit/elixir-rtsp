@@ -1,6 +1,6 @@
-defmodule ExRtsp.SIP.Request do
+defmodule ExRtsp.SDP.Request do
   @moduledoc """
-  Documentation for `ExRtsp.SIP.Request`.
+  Documentation for `ExRtsp.SDP.Request`.
   """
 
   defstruct [

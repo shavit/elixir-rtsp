@@ -1,7 +1,7 @@
-defmodule ExRtsp.SIP.ResponseTest do
+defmodule ExRtsp.SDP.ResponseTest do
   use ExUnit.Case
-  doctest ExRtsp.SIP.Response
-  alias ExRtsp.SIP.Response
+  doctest ExRtsp.SDP.Response
+  alias ExRtsp.SDP.Response
 
   test "decode/1 handle invalid responses" do
     assert {:error, _reason} = Response.new("header\r\n")
