@@ -40,7 +40,8 @@ defmodule ExRtsp.SDP.ResponseTest do
   test "encode/1 encodes a response" do
     resp = %Response{
       cseq: 2,
-      status: 200
+      status: "OK",
+      status_code: 200,
     }
 
     assert Response.encode(resp) == "RTSP/1.0 200 OK \r\nCSeq: 2\r\n\r\n"

@@ -7,6 +7,7 @@ defmodule ExRtsp.SDP.Response do
 
   defstruct [
     :status,
+    :status_code,
     :name,
     :cseq,
     :information,
@@ -276,7 +277,7 @@ defmodule ExRtsp.SDP.Response do
   """
   def encode(%__MODULE__{} = struct) do
     [
-      ["RTSP/1.0", get_status_for_code(struct.status), "\r\n"],
+      ["RTSP/1.0", get_status_for_code(struct), "\r\n"],
       ["CSeq:", struct.cseq],
       ["\r\n\r\n"]
     ]
@@ -284,10 +285,7 @@ defmodule ExRtsp.SDP.Response do
     |> Enum.join()
   end
 
-  defp get_status_for_code(status) when is_number(status) do
-    case status do
-      200 -> "#{status} OK"
-      _ -> "#{status}"
-    end
+  defp get_status_for_code(%__MODULE__{status: status, status_code: code}) do
+    "#{code} #{status}"
   end
 end
