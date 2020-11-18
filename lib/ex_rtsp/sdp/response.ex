@@ -8,6 +8,7 @@ defmodule ExRtsp.SDP.Response do
   defstruct [
     :status,
     :status_code,
+    :version,
     :name,
     :cseq,
     :information,
