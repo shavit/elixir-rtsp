@@ -21,6 +21,8 @@ defmodule ExRtsp.SDP.Response do
     :server_rtsp_port
   ]
 
+  @version "RTSP/1.0"
+
   @doc """
   new/1 decodes sdp messages
 
@@ -278,7 +280,7 @@ defmodule ExRtsp.SDP.Response do
   """
   def encode(%__MODULE__{} = struct) do
     [
-      ["RTSP/1.0", get_status_for_code(struct), "\r\n"],
+      [@version, get_status_for_code(struct), "\r\n"],
       ["CSeq:", struct.cseq],
       ["\r\n\r\n"]
     ]
