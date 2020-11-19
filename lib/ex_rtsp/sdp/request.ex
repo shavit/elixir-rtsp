@@ -5,6 +5,8 @@ defmodule ExRtsp.SDP.Request do
 
   defstruct [
     :version,
+    :status,
+    :status_code,
     :method,
     :resource,
     :header,
