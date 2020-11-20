@@ -12,7 +12,8 @@ defmodule ExRtsp.SDP.Request do
     :header,
     :header_lines,
     :cseq,
-    :body
+    :body,
+    :media
   ]
 
   @type type :: :cache_control | :connection | :date | :via
