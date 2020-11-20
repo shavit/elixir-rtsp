@@ -291,4 +291,11 @@ defmodule ExRtsp.SDP.Response do
   defp get_status_for_code(%__MODULE__{status: status, status_code: code}) do
     "#{code} #{status}"
   end
+
+  @doc """
+  describe/0 create a describe response
+  """
+  def describe do
+    "RTSP/1.0 200 OK\r\n\r\n"
+  end
 end

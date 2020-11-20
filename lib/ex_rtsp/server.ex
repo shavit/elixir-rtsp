@@ -5,6 +5,7 @@ defmodule ExRtsp.Server do
   use GenServer
   require Logger
   alias ExRtsp.SDP.Request
+  alias ExRtsp.SDP.Response
 
   def start_link(opts) do
     name = Keyword.get(opts, :name, __MODULE__)
@@ -53,7 +54,7 @@ defmodule ExRtsp.Server do
   end
 
   defp handle_request(%Request{method: "DESCRIBE"}, from, state) do
-    if !is_nil(from), do: :gen_tcp.send(from, "RTSP/1.0 200 OK\r\n\r\n")
+    if !is_nil(from), do: :gen_tcp.send(from, Response.describe())
 
     state
   end
