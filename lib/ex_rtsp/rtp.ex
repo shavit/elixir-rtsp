@@ -147,7 +147,8 @@ defmodule ExRtsp.RTP do
     }
   end
 
-  defp decode_payload_data(_data), do: :invalid
+  # defp decode_payload_data(_data), do: :invalid
+  defp decode_payload_data(_data), do: %{}
 
   defp handle_message(%{timestamp: timestamp}, state) do
     %{state | timestamp: timestamp}
