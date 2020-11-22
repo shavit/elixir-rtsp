@@ -80,7 +80,8 @@ defmodule ExRtsp.RTP do
       encoder_socket: encoder_socket,
       tmp_file: tmp_file,
       job_id: Keyword.get(opts, :job_id),
-      timestamp: nil
+      timestamp: nil,
+      medium: Keyword.get(opts, :medium)
     }
 
     {:ok, state}
