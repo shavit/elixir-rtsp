@@ -18,7 +18,8 @@ defmodule ExRtsp.RTCP do
       socket: socket,
       server: Keyword.get(opts, :server),
       timestamp: nil,
-      ssrc: nil
+      ssrc: nil,
+      medium: Keyword.get(opts, :medium)
     }
 
     {:ok, state}
