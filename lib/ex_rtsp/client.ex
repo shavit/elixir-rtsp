@@ -128,38 +128,51 @@ defmodule ExRtsp.Client do
 
   def handle_call({:setup, opts}, _ref, state) do
     transport = Keyword.get(opts, :transport, Request.option_set_transport_default())
-    track_id = state.media |> List.last() |> Map.get(:track_id)
-    url = state.content_base <> "trackID=#{track_id}"
 
-    {res, state} =
-      Request.new(
-        url: url,
-        cseq: state.cseq + 1,
-        method: :setup,
-        transport: transport,
-        accept: Keyword.get(opts, :accept, "application/sdp")
-      )
-      |> send_req(state)
+    cseq =
+      Enum.reduce(state.media, state.cseq, fn a, acc ->
+        track_id = Map.get(a, :track_id)
+        url = state.content_base <> "trackID=#{track_id}"
+        cseq = acc + 1
 
-    {:reply, res, state}
+        {res, state} =
+          Request.new(
+            url: url,
+            cseq: cseq,
+            method: :setup,
+            transport: transport,
+            accept: Keyword.get(opts, :accept, "application/sdp")
+          )
+          |> send_req(state)
+
+        cseq
+      end)
+
+    {:reply, :ok, %{state | cseq: cseq}}
   end
 
   def handle_call({:play, opts}, _ref, state) do
-    track_id = state.media |> List.last() |> Map.get(:track_id)
-    url = state.content_base <> "trackID=#{track_id}"
+    cseq =
+      Enum.reduce(state.media, state.cseq, fn a, acc ->
+        track_id = Map.get(a, :track_id)
+        url = state.content_base <> "trackID=#{track_id}"
+        cseq = acc + 1
 
-    {res, state} =
-      Request.new(
-        url: url,
-        cseq: state.cseq + 1,
-        content_base: state.content_base,
-        method: :play,
-        session: state.session_id,
-        range: Keyword.get(opts, :range, {10})
-      )
-      |> send_req(state)
+        {:ok, _state} =
+          Request.new(
+            url: url,
+            cseq: cseq,
+            content_base: state.content_base,
+            method: :play,
+            session: state.session_id,
+            range: Keyword.get(opts, :range, {10})
+          )
+          |> send_req(state)
 
-    {:reply, res, state}
+        cseq
+      end)
+
+    {:reply, :ok, %{state | cseq: cseq}}
   end
 
   def handle_call({:pause, _opts}, _ref, state) do
