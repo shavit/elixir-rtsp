@@ -98,8 +98,8 @@ defmodule ExRtsp.RTP do
     body = msg_decoded.payload
     # Ffmpeg.encode(state.tmp_file, body)
     state = handle_message(msg_decoded, state)
-    Logger.info("[Client.RTP] #{inspect(msg_decoded)}")
-    Logger.info("[Client.RTP] payload: #{inspect(msg_decoded.payload)}")
+    # Logger.info("[Client.RTP] #{inspect(msg_decoded)}")
+    # Logger.info("[Client.RTP] payload: #{inspect(msg_decoded.payload)}")
 
     {:noreply, state}
   end
