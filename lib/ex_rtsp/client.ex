@@ -213,18 +213,23 @@ defmodule ExRtsp.Client do
   end
 
   def handle_call({:teardown, _opts}, _ref, state) do
-    url = build_url(state) <> "/trackID=1"
+    cseq =
+      Enum.reduce(state.media, state.cseq, fn a, acc ->
+        cseq = acc + 1
+        track_id = Map.get(a, :track_id)
+        url = build_url(state) <> "/trackID=#{track_id}"
 
-    {res, state} =
-      Request.new(
-        url: url,
-        cseq: state.cseq + 1,
-        method: :record,
-        session: state.session_id
-      )
-      |> send_req(state)
+        {:ok, state} =
+          Request.new(
+            url: url,
+            cseq: state.cseq + 1,
+            method: :record,
+            session: state.session_id
+          )
+          |> send_req(state)
+      end)
 
-    {:reply, res, state}
+    {:reply, :ok, %{state | cseq: cseq}}
   end
 
   def handle_call({:set_parameter, opts}, _ref, state) do
