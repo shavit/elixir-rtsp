@@ -1,6 +1,7 @@
-defmodule ExRtsp.RequestTest do
-  alias ExRtsp.Request
+defmodule ExRtsp.SIP.RequestTest do
   use ExUnit.Case
+  doctest ExRtsp.SIP.Request
+  alias ExRtsp.SIP.Request
 
   describe "request" do
     test "new/1 creates a request" do
@@ -14,7 +15,7 @@ defmodule ExRtsp.RequestTest do
 
       req = Request.new(opts)
 
-      assert %ExRtsp.Request{
+      assert %Request{
                body: [],
                header: "OPTIONS * RTSP/1.0",
                header_lines: ["CSeq: 4", nil, "User-Agent: ExRtsp", nil, nil, nil, nil],

@@ -1,6 +1,6 @@
-defmodule ExRtsp.Response do
+defmodule ExRtsp.SIP.Response do
   @moduledoc """
-  Documentation for `ExRtsp.Response`.
+  Documentation for `ExRtsp.SIP.Response`.
 
   SDP: Session Description Protocol
   """
