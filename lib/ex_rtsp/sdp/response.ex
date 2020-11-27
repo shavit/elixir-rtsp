@@ -296,6 +296,6 @@ defmodule ExRtsp.SDP.Response do
   describe/0 create a describe response
   """
   def describe do
-    "RTSP/1.0 200 OK\r\n\r\n"
+    @version <> " 200 OK\r\n\r\n"
   end
 end
