@@ -13,5 +13,11 @@ defmodule ExRtsp.SDP do
     :header_lines,
     :cseq,
     :body
+    :version,
+    :name,
+    :information,
+    :media,
+    :content_base,
+    :session,
   ]
 end
