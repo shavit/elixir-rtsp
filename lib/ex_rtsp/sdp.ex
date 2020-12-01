@@ -20,4 +20,7 @@ defmodule ExRtsp.SDP do
     :content_base,
     :session
   ]
+
+  @crlf "\r\n\r\n"
+  @version "RTSP/1.0"
 end
