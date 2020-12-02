@@ -46,13 +46,13 @@ defmodule ExRtsp.SDP.Request do
   @version "RTSP/1.0"
 
   @doc """
-  new/1 creates a new request
+  read/1 creates a new request
 
   Example requset
 
   "DESCRIBE rtsp://127.0.0.1:1935 RTSP/1.0\r\cCSeq: 1\r\n\r\n"
   """
-  def new(opts) do
+  def read(opts) do
     method = opts |> Keyword.get(:method, :options) |> get_req_method()
     resource = Keyword.get(opts, :url, "*")
 
@@ -140,7 +140,7 @@ defmodule ExRtsp.SDP.Request do
   """
   def new_setup(_resp) do
     url = "rtsp://host/s0/trackID=2"
-    new(method: :setup, url: url, transport: option_set_transport_default())
+    read(method: :setup, url: url, transport: option_set_transport_default())
   end
 
   @doc """

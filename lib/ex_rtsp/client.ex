@@ -116,7 +116,7 @@ defmodule ExRtsp.Client do
 
   def handle_call({:describe, _opts}, _ref, state) do
     {res, state} =
-      Request.new(
+      Request.read(
         url: build_url(state),
         cseq: state.cseq + 1,
         method: :describe
@@ -136,7 +136,7 @@ defmodule ExRtsp.Client do
         cseq = acc + 1
 
         {res, state} =
-          Request.new(
+          Request.read(
             url: url,
             cseq: cseq,
             method: :setup,
@@ -159,7 +159,7 @@ defmodule ExRtsp.Client do
         cseq = acc + 1
 
         {:ok, _state} =
-          Request.new(
+          Request.read(
             url: url,
             cseq: cseq,
             content_base: state.content_base,
@@ -183,7 +183,7 @@ defmodule ExRtsp.Client do
         cseq = acc + 1
 
         {:ok, state} =
-          Request.new(
+          Request.read(
             url: url,
             cseq: state.cseq + 1,
             content_base: state.content_base,
@@ -204,7 +204,7 @@ defmodule ExRtsp.Client do
         cseq = acc + 1
 
         {:ok, state} =
-          Request.new(
+          Request.read(
             url: url,
             cseq: state.cseq + 1,
             content_base: state.content_base,
@@ -225,7 +225,7 @@ defmodule ExRtsp.Client do
         url = build_url(state) <> "/trackID=#{track_id}"
 
         {:ok, state} =
-          Request.new(
+          Request.read(
             url: url,
             cseq: state.cseq + 1,
             method: :record,
@@ -245,7 +245,7 @@ defmodule ExRtsp.Client do
         url = build_url(state) <> "/trackID=#{track_id}"
 
         {:ok, state} =
-          Request.new(
+          Request.read(
             url: url,
             cseq: cseq,
             method: :record,
@@ -281,7 +281,7 @@ defmodule ExRtsp.Client do
   def handle_info({:tcp, _from, msg}, state) do
     Logger.info("TCP message: #{msg}")
 
-    case Response.new(msg) do
+    case Response.read(msg) do
       %Response{status: 404, content_base: base} ->
         Logger.error("Error: Route not found /#{base}")
         {:noreply, state}

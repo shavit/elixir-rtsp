@@ -4,8 +4,8 @@ defmodule ExRtsp.SDP.RequestTest do
   alias ExRtsp.SDP.Request
 
   describe "request" do
-    test "new/1 creates a request" do
-      assert %Request{} = Request.new([])
+    test "read/1 creates a new request" do
+      assert %Request{} = Request.read([])
 
       opts = [
         cseq: 4,
@@ -13,7 +13,7 @@ defmodule ExRtsp.SDP.RequestTest do
         port: "4000"
       ]
 
-      req = Request.new(opts)
+      req = Request.read(opts)
 
       assert %Request{
                body: [],
@@ -32,7 +32,7 @@ defmodule ExRtsp.SDP.RequestTest do
         port: "4000"
       ]
 
-      req = Request.new(opts)
+      req = Request.read(opts)
       assert "OPTIONS * RTSP/1.0\r\nCSeq: 4\r\nUser-Agent: ExRtsp\r\n\r\n" == Request.encode(req)
     end
 
