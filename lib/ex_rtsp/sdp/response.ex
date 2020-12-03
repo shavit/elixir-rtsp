@@ -24,7 +24,7 @@ defmodule ExRtsp.SDP.Response do
   @version "RTSP/1.0"
 
   @doc """
-  new/1 decodes sdp messages
+  read/1 reads sdp messages
 
   The response will have this content type in the header
     Content-Type: application/sdp
@@ -37,7 +37,7 @@ defmodule ExRtsp.SDP.Response do
   m=  (media name and transport address)
   a=control:trackID=1
   """
-  def new(resp) do
+  def read(resp) do
     case String.split(resp, "\r\n\r\n") do
       [header, body] -> decode(header, body)
       _ -> {:error, "invalid response"}
