@@ -276,9 +276,9 @@ defmodule ExRtsp.SDP.Response do
   end
 
   @doc """
-  encode/1 encodes a response
+  write/1 writes a response
   """
-  def encode(%__MODULE__{} = struct) do
+  def write(%__MODULE__{} = struct) do
     [
       [@version, get_status_for_code(struct), "\r\n"],
       ["CSeq:", struct.cseq],
