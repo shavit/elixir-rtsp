@@ -75,9 +75,9 @@ defmodule ExRtsp.SDP.Request do
   end
 
   @doc """
-  encode/1 encodes request to binary
+  write/1 encodes request to binary
   """
-  def encode(%__MODULE__{} = req) do
+  def write(%__MODULE__{} = req) do
     encode_header(req) <> encode_body(req)
   end
 

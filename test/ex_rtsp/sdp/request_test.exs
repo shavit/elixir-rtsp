@@ -33,7 +33,7 @@ defmodule ExRtsp.SDP.RequestTest do
       ]
 
       req = Request.read(opts)
-      assert "OPTIONS * RTSP/1.0\r\nCSeq: 4\r\nUser-Agent: ExRtsp\r\n\r\n" == Request.encode(req)
+      assert "OPTIONS * RTSP/1.0\r\nCSeq: 4\r\nUser-Agent: ExRtsp\r\n\r\n" == Request.write(req)
     end
 
     test "option_set_transport/1 returns a transport option in binary format" do
