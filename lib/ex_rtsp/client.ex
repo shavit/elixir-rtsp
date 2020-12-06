@@ -63,7 +63,7 @@ defmodule ExRtsp.Client do
         cseq: state.cseq,
         method: :describe
       ]
-      |> Request.new()
+      |> Request.read()
       |> send_req(state)
 
     {:noreply, %{state | conn: sock}}
@@ -107,7 +107,7 @@ defmodule ExRtsp.Client do
   defp send_req(_req, %{conn: nil} = state), do: {{:error, "need to reconnect"}, state}
 
   defp send_req(%Request{} = req, state) do
-    req = Request.read(req)
+    req = Request.write(req)
     Logger.debug(fn -> "Send request #{state.cseq}" end)
 
     res = :gen_tcp.send(state.conn, req)

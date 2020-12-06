@@ -125,7 +125,7 @@ defmodule ExRtsp.SDP.Request do
   def option_set_transport(opt), do: "Transport: #{opt}"
 
   def option_set_transport_default,
-    do: option_set_transport("RTP/AVP/UDP;unicast;client_port=3000-3001")
+    do: option_set_transport("RTP/AVP/UDP;unicast;client_port=3000-3003")
 
   defp encode_body(%__MODULE__{body: body}) do
     Enum.join(body, "\r\n")
