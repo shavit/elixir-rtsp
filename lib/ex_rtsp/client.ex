@@ -299,7 +299,7 @@ defmodule ExRtsp.Client do
   end
 
   def handle_info({:tcp_closed, _port}, state) do
-    Logger.info("TCP closed")
+    Logger.warn("TCP closed")
 
     {:noreply, %{state | conn: nil}}
   end
