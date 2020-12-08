@@ -42,7 +42,7 @@ defmodule ExRtsp.SDP.RequestTest do
     end
 
     test "optino_set_transport_default/0 returns a default transport option" do
-      assert "Transport: RTP/AVP/UDP;unicast;client_port=3000-3001" ==
+      assert "Transport: RTP/AVP/UDP;unicast;client_port=3000-3003" ==
                Request.option_set_transport_default()
     end
 
