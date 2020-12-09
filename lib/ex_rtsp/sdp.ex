@@ -10,7 +10,6 @@ defmodule ExRtsp.SDP do
     :method,
     :resource,
     :header,
-    :header_lines,
     :cseq,
     :body,
     :version,
