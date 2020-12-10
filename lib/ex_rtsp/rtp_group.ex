@@ -13,7 +13,7 @@ defmodule ExRtsp.RTPGroup do
 
   @impl true
   def init(opts) do
-    rtp_port = Keyword.get(opts, :port)
+    rtp_port = Keyword.get(opts, :port, 3000)
     rtcp_port = rtp_port + 1
 
     children = [
