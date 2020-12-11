@@ -24,5 +24,12 @@ defmodule ExRtsp.RTPGroup do
     Supervisor.init(children, strategy: :one_for_all)
   end
 
+  def children_for_media(opts) do
+    [
+      {RTP, [Keyword.put(opts, :port, 3000)]}
+      {RTCP, [Keyword.put(opts, :port, 3001)]}
+    ]
+  end
+
   def handle_call(:ping, _ref, state), do: {:reply, :pong, state}
 end
