@@ -31,5 +31,13 @@ defmodule ExRtsp.RTPGroup do
     ]
   end
 
+  def children_for_media(:video, opts) do
+    port = Keyword.get(opts, :port)
+    [
+      {RTP, [Keyword.put(opts, :port, port)]}
+      {RTCP, [Keyword.put(opts, :port, port + 1)]}
+    ]
+  end
+
   def handle_call(:ping, _ref, state), do: {:reply, :pong, state}
 end
