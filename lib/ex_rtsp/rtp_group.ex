@@ -16,12 +16,10 @@ defmodule ExRtsp.RTPGroup do
     rtp_port = Keyword.get(opts, :port, 3000)
     rtcp_port = rtp_port + 1
 
-    children =
-      opts
-      |> Keyword.get(:media, :audio)
-      |> children_for_media(opts)
-
-    Supervisor.init(children, strategy: :one_for_all)
+    opts
+    |> Keyword.get(:media, :audio)
+    |> children_for_media(opts)
+    |> Supervisor.init(strategy: :one_for_all)
   end
 
   def children_for_media(_media, opts) do
