@@ -10,6 +10,15 @@ defmodule ExRtsp.RTPTest do
       assert true == Process.exit(pid, :normal)
     end
 
+    test "init/1 state" do
+      args = [
+        port: 3000
+    ]
+
+    assert {:ok, state} = RTP.init(args)
+    assert 3000 == Map.get(state, :port)
+    end
+
     test "decode/1 decodes control messages" do
       [
         <<128, 200, 0, 6, 128, 173, 212, 19, 226, 254, 93, 195, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
