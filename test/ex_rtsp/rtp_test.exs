@@ -13,10 +13,10 @@ defmodule ExRtsp.RTPTest do
     test "init/1 state" do
       args = [
         port: 3000
-    ]
+      ]
 
-    assert {:ok, state} = RTP.init(args)
-    assert 3000 == Map.get(state, :port)
+      assert {:ok, state} = RTP.init(args)
+      assert 3000 == Map.get(state, :port)
     end
 
     test "decode/1 decodes control messages" do
