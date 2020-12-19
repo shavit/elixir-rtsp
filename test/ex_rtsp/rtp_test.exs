@@ -17,6 +17,7 @@ defmodule ExRtsp.RTPTest do
 
       assert {:ok, state} = RTP.init(args)
       assert 3000 == Map.get(state, :port)
+      assert nil != Map.get(state, :socket)
     end
 
     test "decode/1 decodes control messages" do
