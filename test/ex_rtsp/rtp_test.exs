@@ -21,6 +21,7 @@ defmodule ExRtsp.RTPTest do
       assert nil != Map.get(state, :encoder_socket)
       assert nil != Map.get(state, :tmp_file)
       assert nil != Map.get(state, :job_id)
+      assert nil == Map.get(state, :timestamp)
     end
 
     test "decode/1 decodes control messages" do
