@@ -29,6 +29,7 @@ defmodule ExRtsp.RTPTest do
       ref = "some ref"
       state = %{id: "some state"}
       assert {:reply, reply_1, reply_2} = RTP.handle_call(:stop, ref, state)
+      assert "some state" == Map.get(reply_1, :id)
     end
 
     test "decode/1 decodes control messages" do
