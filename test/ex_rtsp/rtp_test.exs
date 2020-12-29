@@ -13,7 +13,8 @@ defmodule ExRtsp.RTPTest do
     test "init/1 state" do
       args = [
         port: 3000,
-        job_id: "some job id"
+        job_id: "some job id",
+        medium: "some medium"
       ]
 
       assert {:ok, state} = RTP.init(args)
@@ -23,7 +24,7 @@ defmodule ExRtsp.RTPTest do
       assert nil != Map.get(state, :tmp_file)
       assert "some job id" == Map.get(state, :job_id)
       assert nil == Map.get(state, :timestamp)
-      assert nil != Map.get(state, :medium)
+      assert "some medium" == Map.get(state, :medium)
     end
 
     test "handle_call/3 stop call" do
