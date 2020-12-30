@@ -35,6 +35,30 @@ defmodule ExRtsp.RTPTest do
       assert "some state" == Map.get(reply_2, :id)
     end
 
+    test "handle_info/5 udp call" do
+      port = "some port"
+      ip = {127, 0, 0, 1}
+      udp_port = nil
+
+      p = 0
+      x = 0
+      cc = 1
+      m = 0
+      pt = 96
+      seq = 1
+      timestamp = DateTime.utc_now() |> DateTime.to_unix()
+      ssrc = 1234
+      csrc = 1234
+      b = <<>>
+      msg = <<2::2, p::1, x::1, cc::4, m::1, pt::7, seq::16, timestamp::32, ssrc::32, b::binary>>
+
+      state = %{
+        timestamp: nil
+      }
+
+      assert {:noreply, state} = RTP.handle_info({:udp, port, ip, udp_port, msg}, state)
+    end
+
     test "decode/1 decodes control messages" do
       [
         <<128, 200, 0, 6, 128, 173, 212, 19, 226, 254, 93, 195, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
