@@ -57,6 +57,7 @@ defmodule ExRtsp.RTPTest do
       }
 
       assert {:noreply, state} = RTP.handle_info({:udp, port, ip, udp_port, msg}, state)
+      assert state.timestamp == timestamp
     end
 
     test "decode/1 decodes control messages" do
