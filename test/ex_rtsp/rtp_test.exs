@@ -60,6 +60,17 @@ defmodule ExRtsp.RTPTest do
       assert state.timestamp == timestamp
     end
 
+    test "terminate/2 reason" do
+      File.rmdir("/tmp/ffmpeg_socket_")
+      File.mkdir!("/tmp/ffmpeg_socket_")
+      state = %{
+        encoder_socket: nil,
+        job_id: nil
+      }
+      assert :normal == RTP.terminate(:normal, state)
+      File.rmdir!("/tmp/ffmpeg_socket_")
+    end
+
     test "decode/1 decodes control messages" do
       [
         <<128, 200, 0, 6, 128, 173, 212, 19, 226, 254, 93, 195, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
