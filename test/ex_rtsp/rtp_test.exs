@@ -62,13 +62,16 @@ defmodule ExRtsp.RTPTest do
 
     test "terminate/2 reason" do
       File.rmdir("/tmp/ffmpeg_socket_")
-      File.mkdir!("/tmp/ffmpeg_socket_")
+      File.mkdir("/tmp/ffmpeg_socket_")
+      encoder_socket = Port.open({:spawn, "sleep 3; echo 1"}, [:binary])
+
       state = %{
-        encoder_socket: nil,
+        encoder_socket: encoder_socket,
         job_id: nil
       }
+
       assert :normal == RTP.terminate(:normal, state)
-      File.rmdir!("/tmp/ffmpeg_socket_")
+      File.rmdir("/tmp/ffmpeg_socket_")
     end
 
     test "decode/1 decodes control messages" do
