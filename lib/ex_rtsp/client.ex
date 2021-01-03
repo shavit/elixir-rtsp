@@ -54,19 +54,22 @@ defmodule ExRtsp.Client do
   end
 
   def handle_continue(:dial_rtsp, state) do
-    {:ok, sock} = state.host |> String.to_charlist() |> reconnect(state.port)
-    state = %{state | conn: sock}
+    with {:ok, sock} <- state.host |> String.to_charlist() |> reconnect(state.port),
+         state <- %{state | conn: sock} do
+      {res, state} =
+        [
+          url: build_url(state),
+          cseq: state.cseq,
+          method: :describe
+        ]
+        |> Request.read()
+        |> send_req(state)
 
-    {res, state} =
-      [
-        url: build_url(state),
-        cseq: state.cseq,
-        method: :describe
-      ]
-      |> Request.read()
-      |> send_req(state)
-
-    {:noreply, %{state | conn: sock}}
+      {:noreply, %{state | conn: sock}}
+    else
+      _err ->
+        {:noreply, state}
+    end
   end
 
   defp build_url(state), do: "rtsp://#{state.host}:#{state.port}#{state.abs_path}"
