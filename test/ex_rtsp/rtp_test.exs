@@ -48,7 +48,7 @@ defmodule ExRtsp.RTPTest do
       seq = 1
       timestamp = DateTime.utc_now() |> DateTime.to_unix()
       ssrc = 1234
-      csrc = 1234
+      # csrc = 1234
       b = <<>>
       msg = <<2::2, p::1, x::1, cc::4, m::1, pt::7, seq::16, timestamp::32, ssrc::32, b::binary>>
 
