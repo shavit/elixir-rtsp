@@ -47,5 +47,26 @@ defmodule ExRtsp.ClientTest do
       assert "127.0.0.1" == state.host
       assert 554 == state.port
     end
+
+    test "handle_call/3 setup" do
+      state = %{
+        abs_path: "/stream-test",
+        content_base: "rtsp://127.0.0.1:554/",
+        cseq: 1,
+        host: "127.0.0.1",
+        media: [
+          %{
+            track_id: "1"
+          }
+        ],
+        port: 554,
+        conn: nil
+      }
+
+      opts = []
+      ref = "some ref"
+      assert {:reply, res, state} = Client.handle_call({:setup, opts}, ref, state)
+      assert :ok == res
+    end
   end
 end
