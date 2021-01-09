@@ -68,6 +68,7 @@ defmodule ExRtsp.ClientTest do
       assert {:reply, res, state} = Client.handle_call({:setup, opts}, ref, state)
       assert :ok == res
       assert "/stream-test" == state.abs_path
+      assert nil == state.conn
     end
   end
 end
