@@ -70,6 +70,7 @@ defmodule ExRtsp.ClientTest do
       assert "/stream-test" == state.abs_path
       assert nil == state.conn
       assert "rtsp://127.0.0.1:554/" == state.content_base
+      assert 2 == state.cseq
     end
   end
 end
