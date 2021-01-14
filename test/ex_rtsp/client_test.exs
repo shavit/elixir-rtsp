@@ -73,6 +73,7 @@ defmodule ExRtsp.ClientTest do
       assert 2 == state.cseq
       assert "127.0.0.1" == state.host
       assert is_list(state.media)
+      assert 554 == state.port
     end
   end
 end
